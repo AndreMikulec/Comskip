@@ -1073,19 +1073,21 @@ jobs:
         then
           if [ -f comskip-gui ]; then cp comskip-gui Export; fi
 
+          # NOT USEFUL
           # 3rd party shared FFmpeg xor ...
-          if [ $(ls win-gpl-shared/bin/avcodec*.*    > /dev/null 2>&1 && echo 0) ]; then cp win-gpl-shared/bin/avcodec*.*     Export; fi
-          if [ $(ls win-gpl-shared/bin/avformat*.*   > /dev/null 2>&1 && echo 0) ]; then cp win-gpl-shared/bin/avformat*.*    Export; fi
-          if [ $(ls win-gpl-shared/bin/swscale*.*    > /dev/null 2>&1 && echo 0) ]; then cp win-gpl-shared/bin/swscale*.*     Export; fi
-          if [ $(ls win-gpl-shared/bin/avutil*.*     > /dev/null 2>&1 && echo 0) ]; then cp win-gpl-shared/bin/avutil*.*      Export; fi
-          if [ $(ls win-gpl-shared/bin/swresample*.* > /dev/null 2>&1 && echo 0) ]; then cp win-gpl-shared/bin/swresample*.*  Export; fi
+          # if [ $(ls win-gpl-shared/bin/avcodec*.*    > /dev/null 2>&1 && echo 0) ]; then cp win-gpl-shared/bin/avcodec*.*     Export; fi
+          # if [ $(ls win-gpl-shared/bin/avformat*.*   > /dev/null 2>&1 && echo 0) ]; then cp win-gpl-shared/bin/avformat*.*    Export; fi
+          # if [ $(ls win-gpl-shared/bin/swscale*.*    > /dev/null 2>&1 && echo 0) ]; then cp win-gpl-shared/bin/swscale*.*     Export; fi
+          # if [ $(ls win-gpl-shared/bin/avutil*.*     > /dev/null 2>&1 && echo 0) ]; then cp win-gpl-shared/bin/avutil*.*      Export; fi
+          # if [ $(ls win-gpl-shared/bin/swresample*.* > /dev/null 2>&1 && echo 0) ]; then cp win-gpl-shared/bin/swresample*.*  Export; fi
 
+          # NOT USEFUL
           # MSYS2 files from the MSYS FFmpeg package xor (previous) set above ...
-          if [ $(ls ${MSYSTEM_PREFIX}/bin/avcodec*.*    > /dev/null 2>&1 && echo 0) ]; then cp ${MSYSTEM_PREFIX}/bin/avcodec*.*     Export; fi
-          if [ $(ls ${MSYSTEM_PREFIX}/bin/avformat*.*   > /dev/null 2>&1 && echo 0) ]; then cp ${MSYSTEM_PREFIX}/bin/avformat*.*    Export; fi
-          if [ $(ls ${MSYSTEM_PREFIX}/bin/swscale*.*    > /dev/null 2>&1 && echo 0) ]; then cp ${MSYSTEM_PREFIX}/bin/swscale*.*     Export; fi
-          if [ $(ls ${MSYSTEM_PREFIX}/bin/avutil*.*     > /dev/null 2>&1 && echo 0) ]; then cp ${MSYSTEM_PREFIX}/bin/avutil*.*      Export; fi
-          if [ $(ls ${MSYSTEM_PREFIX}/bin/swresample*.* > /dev/null 2>&1 && echo 0) ]; then cp ${MSYSTEM_PREFIX}/bin/swresample*.*  Export; fi
+          # if [ $(ls ${MSYSTEM_PREFIX}/bin/avcodec*.*    > /dev/null 2>&1 && echo 0) ]; then cp ${MSYSTEM_PREFIX}/bin/avcodec*.*     Export; fi
+          # if [ $(ls ${MSYSTEM_PREFIX}/bin/avformat*.*   > /dev/null 2>&1 && echo 0) ]; then cp ${MSYSTEM_PREFIX}/bin/avformat*.*    Export; fi
+          # if [ $(ls ${MSYSTEM_PREFIX}/bin/swscale*.*    > /dev/null 2>&1 && echo 0) ]; then cp ${MSYSTEM_PREFIX}/bin/swscale*.*     Export; fi
+          # if [ $(ls ${MSYSTEM_PREFIX}/bin/avutil*.*     > /dev/null 2>&1 && echo 0) ]; then cp ${MSYSTEM_PREFIX}/bin/avutil*.*      Export; fi
+          # if [ $(ls ${MSYSTEM_PREFIX}/bin/swresample*.* > /dev/null 2>&1 && echo 0) ]; then cp ${MSYSTEM_PREFIX}/bin/swresample*.*  Export; fi
         fi
 
 
@@ -1277,7 +1279,7 @@ jobs:
         }}
       uses: ncipollo/release-action@v1
       with:
-        body: "## Comskip ${{ github.ref_name }} Release  \nBuilt at the UTC date-time of ${{ env.TODAYSDATETIME }}.  \n### Windows\nIf you are using Windows (without Cygwin), then you just need the FFmpeg .dll files of `avcodec avformat swscale avutil swresample` and the `comskip.exe` file. These files all exist in the release `.zip` file (seen below).  \n\n### Cygwin\nIf you are using Cygwin, then you need the following ...  \n1. Cygwin on Windows installation.  To install download the file `setup-x86_64.exe` from https://www.cygwin.com/install.html  \n2.  Cygwin packages installed (use `setup-x86_64.exe` to install): `libavformat62 libavcodec62 libswscale9 libavutil60 libswresample6 libSDL1.2_0`\n3. `comskip.exe` file; this single file is located in the release `.zip` file (seen below)"
+        body: "## Comskip ${{ github.ref_name }} Release  \nBuilt at the UTC date-time of ${{ env.TODAYSDATETIME }}.  \n### Windows\nIf you are using Windows (without Cygwin), then you just need:  \n1. FFmpeg shared distribution ( https://github.com/BtbN/FFmpeg-Builds/releases )  \n1. MSYS2 installation ( https://www.msys2.org ), and the  \n1. `comskip.exe` file.  \n\nThis `compskip.exe` file exists in the release `.zip` file (seen below).  \n\nPut in the Windows PATH, the following directories ...  \n1. FFmpeg shared \\lib directory  \n1. FFmpeg shared \\bin directory  \n1. MSYS2 msys64\\usr\\bin directory  \n\n\n### Cygwin\nIf you are using Cygwin, then you need the following ...  \n1. Cygwin on Windows installation ( https://www.cygwin.com ) Download `setup-x86_64.exe`    \n2. Cygwin packages installed (use `setup-x86_64.exe` to install): `libavformat62 libavcodec62 libswscale9 libavutil60 libswresample6 libSDL1.2_0`\n3. `comskip.exe` file; this single file is located in the release `.zip` file (seen below)"
         omitBodyDuringUpdate: true
         tag: ${{ github.ref_name }}
         allowUpdates: true
@@ -1285,4 +1287,3 @@ jobs:
         artifacts: |
           comskip-${{ github.ref_name }}-${{ env.compilerEnv == 'notset' && 'native'  || env.compilerEnv }}-ffmpeg-${{ env.FFMPEGSHORTVERSION }}.zip
         token: ${{ secrets.GITHUB_TOKEN }}
-

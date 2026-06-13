@@ -54,11 +54,11 @@ after_test:
   - dir
   - copy comskip.exe                                                  Export
   - dir  ffmpeg-5.0.1-full_build-shared\bin                        
-  - copy ffmpeg-5.0.1-full_build-shared\bin\avcodec*.*                Export
-  - copy ffmpeg-5.0.1-full_build-shared\bin\avformat*.*               Export
-  - copy ffmpeg-5.0.1-full_build-shared\bin\swscale*.*                Export
-  - copy ffmpeg-5.0.1-full_build-shared\bin\avutil*.*                 Export
-  - copy ffmpeg-5.0.1-full_build-shared\bin\swresample*.*             Export
+  - # copy ffmpeg-5.0.1-full_build-shared\bin\avcodec*.*                Export
+  - # copy ffmpeg-5.0.1-full_build-shared\bin\avformat*.*               Export
+  - # copy ffmpeg-5.0.1-full_build-shared\bin\swscale*.*                Export
+  - # copy ffmpeg-5.0.1-full_build-shared\bin\avutil*.*                 Export
+  - # copy ffmpeg-5.0.1-full_build-shared\bin\swresample*.*             Export
   - cd                                                                Export
   - 7z a %APPVEYOR_BUILD_FOLDER%\comskip-UCRT64-ffmpeg-5.0.1.zip      *
   - cd   %APPVEYOR_BUILD_FOLDER%
