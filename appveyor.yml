@@ -53,6 +53,7 @@ after_test:
   - mkdir                                                             Export
   - dir
   - copy comskip.exe                                                  Export
+  - if exist comskip-gui copy comskip-gui.exe                         Export
   - dir  ffmpeg-5.0.1-full_build-shared\bin                        
   - # copy ffmpeg-5.0.1-full_build-shared\bin\avcodec*.*                Export
   - # copy ffmpeg-5.0.1-full_build-shared\bin\avformat*.*               Export

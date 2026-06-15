@@ -31,7 +31,7 @@ permissions:
 jobs:
 
   setup:
-    runs-on: windows-2025
+    runs-on: windows-2025-vs2026
     steps:
     - name: Pre-build check
       id: build_check
@@ -99,7 +99,7 @@ jobs:
           GithubActionsIgnoreFail: false
 
         - matid: '06'
-          os: windows-2025
+          os: windows-2025-vs2026
           platform: windows-mingw
           compilerEnv: UCRT64
           shellEnv: msys2 {0}
@@ -123,7 +123,7 @@ jobs:
           # ComskipSRCversion: a140b6ac8bc8f596729e9052819affc779c3b377
 
         - matid: '07'
-          os: windows-2025
+          os: windows-2025-vs2026
           platform: windows-mingw
           compilerEnv: UCRT64
           shellEnv: msys2 {0}
@@ -142,7 +142,7 @@ jobs:
         # https://github.com/erikkaashoek/Comskip/issues/167
         #
         - matid: '08'
-          os: windows-2025
+          os: windows-2025-vs2026
           platform: windows-mingw
           compilerEnv: UCRT64
           shellEnv: msys2 {0}
@@ -162,7 +162,7 @@ jobs:
         # compilation terminated.
         #
 #       - matid: '09'
-#         os: windows-2025
+#         os: windows-2025-vs2026
 #         platform: windows-mingw
 #         compilerEnv: MINGW32
 #         shellEnv: msys2 {0}
@@ -173,7 +173,7 @@ jobs:
         # ffmpeg executable ffmpeg-7.1.1-7 at does not work on MSYS of natural ffmpeg 8.1
         # Please, skip trying this version.
 #       - matid: '10'
-#         os: windows-2025
+#         os: windows-2025-vs2026
 #         platform: windows-mingw
 #         compilerEnv: UCRT64
 #         shellEnv: msys2 {0}
@@ -184,7 +184,7 @@ jobs:
 #         GithubActionsIgnoreFail: false
 
         - matid: '11'
-          os: windows-2025
+          os: windows-2025-vs2026
           platform: windows-mingw
           compilerEnv: UCRT64
           shellEnv: msys2 {0}
@@ -198,7 +198,7 @@ jobs:
           # Explanation of "common" Matrix items - "platorm", "provider", "ExtraJobTitleInfo", 
           # "GithubActionsIgnoreFail", and "SKIPImmune"
         - matid: '12'
-          os: windows-2025
+          os: windows-2025-vs2026
           # Currently, "platform" is only used in the non-MSYS2 and non-cygwin builds
           platform: windows-mingw
           compilerEnv: UCRT64
@@ -216,7 +216,7 @@ jobs:
           SKIPImmune: true
 
         - matid: '13'
-          os: windows-2025
+          os: windows-2025-vs2026
           platform: windows-mingw
           compilerEnv: UCRT64
           shellEnv: msys2 {0}
@@ -226,7 +226,7 @@ jobs:
           # Explanation of "specific" matrix items -"Architecture" and "shell"-default
         - matid: '14'
           # Architecture: x64 - currently, only used by cygwin (default - Architecture: x64 )
-          os: windows-2025
+          os: windows-2025-vs2026
           platform: windows-cygwin
           compilerEnv: cygwin
           # shell -- environment (defaults - run - shell - bash)
@@ -353,23 +353,23 @@ jobs:
     - name: Windows Machine Stats for $${{ matrix.os }}
       if: >- 
         ${{ env.SKIP != 'true' && ( 
-        matrix.os == 'windows-2025' 
+        matrix.os == 'windows-2025-vs2026' 
         ) }}
       shell: cmd
       run: |
         systeminfo
 
 
-    - name: General Shell Environment Variables for windows-2025 made using Bash
+    - name: General Shell Environment Variables for windows-2025-vs2026 made using Bash
       # Early and RARE case that I use "matrix." variable in "if"
       if: >- 
         ${{ env.SKIP != 'true' && ( 
-        matrix.os == 'windows-2025' 
+        matrix.os == 'windows-2025-vs2026' 
         ) }}
       shell: bash                     # redundant, because it is my defined matrix default
       run: |
         set -x -v -e
-        echo "BEGIN General Shell Environment Variables for windows-2025 made using Bash"
+        echo "BEGIN General Shell Environment Variables for windows-2025-vs2026 made using Bash"
 
         export TODAYSDATETIME=$(date -u +"%Y-%m-%d-%H-%M")
         if [ "${TODAYSDATETIME}" == "" ]; then export TODAYSDATETIME="notset" ; fi
@@ -383,7 +383,7 @@ jobs:
 
         echo   "HEAD7_GITHUB_SHA: ${HEAD7_GITHUB_SHA}"
 
-        echo "END   General Shell Environment Variables for windows-2025 made using Bash"
+        echo "END   General Shell Environment Variables for windows-2025-vs2026 made using Bash"
 
 
       # OUT OF TIME RIGHT NOW.  IN THE FUTURE, CONVERT EVERYTHING "BELOW" "TO" BASH
@@ -391,7 +391,7 @@ jobs:
       # Early and RARE case that I use "matrix." variable in "if"
       if: >- 
         ${{ env.SKIP != 'true' && ( 
-        matrix.os == 'windows-2025' 
+        matrix.os == 'windows-2025-vs2026' 
         ) }}
       shell: powershell
       run: |
@@ -530,6 +530,7 @@ jobs:
         matrix.platform == 'linux' 
         ) }}
       run: |
+        sudo apt-get update
         sudo apt-get install -y inxi
         set -x -v -e
         sudo inxi -Fxz
@@ -598,7 +599,11 @@ jobs:
           ${{ env.MINGW_PACKAGE_PREFIX }}-pkg-config
           ${{ env.MINGW_PACKAGE_PREFIX }}-yasm
           ${{ env.MINGW_PACKAGE_PREFIX }}-argtable
-          ${{ env.MINGW_PACKAGE_PREFIX }}-SDL
+          ${{ env.MINGW_PACKAGE_PREFIX }}-SDL2
+          ${{ env.MINGW_PACKAGE_PREFIX }}-SDL2_image
+          ${{ env.MINGW_PACKAGE_PREFIX }}-SDL2_mixer
+          ${{ env.MINGW_PACKAGE_PREFIX }}-SDL2_pango
+          ${{ env.MINGW_PACKAGE_PREFIX }}-SDL2_sound
           ${{ env.provider_altarchive_url == 'notset' && env.MINGW_PACKAGE_PREFIX || '' }}${{ env.provider_altarchive_url == 'notset' && '-ffmpeg' || '' }}
           zip
           unzip
@@ -646,9 +651,18 @@ jobs:
           libavutil-devel
           libswresample6
           libswresample-devel
-          libSDL1.2_0
-          libSDL-devel
+          libSDL2-devel
+          libSDL2_2.0_0
+          libSDL2_image-devel
+          libSDL2_image2.0_0
+          libSDL2_mixer-devel
+          libSDL2_mixer2.0_0
+          libSDL2_net-devel
+          libSDL2_net2.0_0
+          libSDL2_ttf-devel
+          libSDL2_ttf2.0_0
           zip
+          mpeg2dec
 
 
     - name: Download, Quick Check, save version FFMPEGVERSION and FFMPEGSHORTVERSION of, ffmpeg from the ${{ matrix.provider_altarchive_url }}
@@ -1040,7 +1054,7 @@ jobs:
         then  
           make
           # comskip.exe
-          # comskip-gui.exe # only naturally package ffmpeg, can produce comskip-gui.exe
+          # comskip-gui.exe # needs the correct package support to produce comskip-gui.exe
         fi
         if [ "${OperatingSystem}" == "Cygwin" ]
         then
@@ -1059,37 +1073,42 @@ jobs:
           #   make sure your project links against Kernel32.lib
           # If you are translating this for a C# or Java (JNA) project, 
           #   ES_CONTINUOUS is a constant that you must define yourself.
+          #
+          # 
+          # make: *** [Makefile:704: comskip_gui-mpeg2dec.o] Error 1
+          #
           # just MAKE this
           make comskip.exe
+          make comskip-gui.exe 2>&1 | tee make_comskip-gui.log > /dev/null && echo 0
+          echo Contents of make_comskip-gui.log ...
+          cat make_comskip-gui.log
         fi
         set -x -v -e
 
         ls -alrt comskip
 
         mkdir Export
-        if [ -f comskip     ]; then cp comskip Export; fi
+        if [ -f comskip     ]; then cp comskip        Export; fi
+        if [ -f comskip-gui ]; then cp comskip-gui    Export; fi
 
-        if [ "${OperatingSystem}" == "Msys" ]
-        then
-          if [ -f comskip-gui ]; then cp comskip-gui Export; fi
-
-          # NOT USEFUL
-          # 3rd party shared FFmpeg xor ...
-          # if [ $(ls win-gpl-shared/bin/avcodec*.*    > /dev/null 2>&1 && echo 0) ]; then cp win-gpl-shared/bin/avcodec*.*     Export; fi
-          # if [ $(ls win-gpl-shared/bin/avformat*.*   > /dev/null 2>&1 && echo 0) ]; then cp win-gpl-shared/bin/avformat*.*    Export; fi
-          # if [ $(ls win-gpl-shared/bin/swscale*.*    > /dev/null 2>&1 && echo 0) ]; then cp win-gpl-shared/bin/swscale*.*     Export; fi
-          # if [ $(ls win-gpl-shared/bin/avutil*.*     > /dev/null 2>&1 && echo 0) ]; then cp win-gpl-shared/bin/avutil*.*      Export; fi
-          # if [ $(ls win-gpl-shared/bin/swresample*.* > /dev/null 2>&1 && echo 0) ]; then cp win-gpl-shared/bin/swresample*.*  Export; fi
-
-          # NOT USEFUL
-          # MSYS2 files from the MSYS FFmpeg package xor (previous) set above ...
-          # if [ $(ls ${MSYSTEM_PREFIX}/bin/avcodec*.*    > /dev/null 2>&1 && echo 0) ]; then cp ${MSYSTEM_PREFIX}/bin/avcodec*.*     Export; fi
-          # if [ $(ls ${MSYSTEM_PREFIX}/bin/avformat*.*   > /dev/null 2>&1 && echo 0) ]; then cp ${MSYSTEM_PREFIX}/bin/avformat*.*    Export; fi
-          # if [ $(ls ${MSYSTEM_PREFIX}/bin/swscale*.*    > /dev/null 2>&1 && echo 0) ]; then cp ${MSYSTEM_PREFIX}/bin/swscale*.*     Export; fi
-          # if [ $(ls ${MSYSTEM_PREFIX}/bin/avutil*.*     > /dev/null 2>&1 && echo 0) ]; then cp ${MSYSTEM_PREFIX}/bin/avutil*.*      Export; fi
-          # if [ $(ls ${MSYSTEM_PREFIX}/bin/swresample*.* > /dev/null 2>&1 && echo 0) ]; then cp ${MSYSTEM_PREFIX}/bin/swresample*.*  Export; fi
-        fi
-
+        # if [ "${OperatingSystem}" == "Msys" ]
+        # then
+        #   # NOT USEFUL
+        #   # 3rd party shared FFmpeg xor ...
+        #   # if [ $(ls win-gpl-shared/bin/avcodec*.*    > /dev/null 2>&1 && echo 0) ]; then cp win-gpl-shared/bin/avcodec*.*     Export; fi
+        #   # if [ $(ls win-gpl-shared/bin/avformat*.*   > /dev/null 2>&1 && echo 0) ]; then cp win-gpl-shared/bin/avformat*.*    Export; fi
+        #   # if [ $(ls win-gpl-shared/bin/swscale*.*    > /dev/null 2>&1 && echo 0) ]; then cp win-gpl-shared/bin/swscale*.*     Export; fi
+        #   # if [ $(ls win-gpl-shared/bin/avutil*.*     > /dev/null 2>&1 && echo 0) ]; then cp win-gpl-shared/bin/avutil*.*      Export; fi
+        #   # if [ $(ls win-gpl-shared/bin/swresample*.* > /dev/null 2>&1 && echo 0) ]; then cp win-gpl-shared/bin/swresample*.*  Export; fi
+        # 
+        #   # NOT USEFUL
+        #   # MSYS2 files from the MSYS FFmpeg package xor (previous) set above ...
+        #   # if [ $(ls ${MSYSTEM_PREFIX}/bin/avcodec*.*    > /dev/null 2>&1 && echo 0) ]; then cp ${MSYSTEM_PREFIX}/bin/avcodec*.*     Export; fi
+        #   # if [ $(ls ${MSYSTEM_PREFIX}/bin/avformat*.*   > /dev/null 2>&1 && echo 0) ]; then cp ${MSYSTEM_PREFIX}/bin/avformat*.*    Export; fi
+        #   # if [ $(ls ${MSYSTEM_PREFIX}/bin/swscale*.*    > /dev/null 2>&1 && echo 0) ]; then cp ${MSYSTEM_PREFIX}/bin/swscale*.*     Export; fi
+        #   # if [ $(ls ${MSYSTEM_PREFIX}/bin/avutil*.*     > /dev/null 2>&1 && echo 0) ]; then cp ${MSYSTEM_PREFIX}/bin/avutil*.*      Export; fi
+        #   # if [ $(ls ${MSYSTEM_PREFIX}/bin/swresample*.* > /dev/null 2>&1 && echo 0) ]; then cp ${MSYSTEM_PREFIX}/bin/swresample*.*  Export; fi
+        # fi
 
     # Save (before the test 
     # to use to see if the comskip executable works OUTSIDE the Github Actions environment
@@ -1279,7 +1298,7 @@ jobs:
         }}
       uses: ncipollo/release-action@v1
       with:
-        body: "## Comskip ${{ github.ref_name }} Release  \nBuilt at the UTC date-time of ${{ env.TODAYSDATETIME }}.  \n### Windows\nIf you are using Windows (without Cygwin), then you just need:  \n1. FFmpeg shared distribution ( https://github.com/BtbN/FFmpeg-Builds/releases )  \n1. MSYS2 installation ( https://www.msys2.org ), and the  \n1. `comskip.exe` file.  \n\nThis `compskip.exe` file exists in the release `.zip` file (seen below).  \n\nPut in the Windows PATH, the following directories ...  \n1. FFmpeg shared \\lib directory  \n1. FFmpeg shared \\bin directory  \n1. MSYS2 msys64\\usr\\bin directory  \n\n\n### Cygwin\nIf you are using Cygwin, then you need the following ...  \n1. Cygwin on Windows installation ( https://www.cygwin.com ) Download `setup-x86_64.exe`    \n2. Cygwin packages installed (use `setup-x86_64.exe` to install): `libavformat62 libavcodec62 libswscale9 libavutil60 libswresample6 libSDL1.2_0`\n3. `comskip.exe` file; this single file is located in the release `.zip` file (seen below)"
+        body: "## Comskip ${{ github.ref_name }} Release  \nBuilt at the UTC date-time of ${{ env.TODAYSDATETIME }}.  \n### Windows\nIf you are using Windows (without Cygwin), then you just need:  \n1. FFmpeg `shared` distribution ( https://github.com/BtbN/FFmpeg-Builds/releases )  \n1. MSYS2 installation ( https://www.msys2.org ), and the  \n1. `comskip.exe` and `comskip-gui` files.  \n\nThese files exist in the release `.zip` file (seen below).  \n\nPut in the Windows PATH, the following directories ...  \n1. FFmpeg shared `\\lib` directory  \n1. FFmpeg shared `\\bin` directory  \n1. MSYS2 `msys64\\usr\\bin` directory  \n\n\n### Cygwin\nIf you are using Cygwin, then you need the following ...  \n1. Cygwin on Windows installation ( https://www.cygwin.com ) Download `setup-x86_64.exe`    \n2. Cygwin packages installed (use `setup-x86_64.exe` to install): `libavformat62 libavcodec62 libswscale9 libavutil60 libswresample6`\n3. `comskip.exe` file; this single file is located in the release `.zip` file (seen below)"
         omitBodyDuringUpdate: true
         tag: ${{ github.ref_name }}
         allowUpdates: true
