@@ -896,6 +896,7 @@ jobs:
 
 
     - name: Pre Build - Exchange to a newer ArgTable config.guess for cygwin
+      id: exchangeNewerConfigGuessforCygwin
       if: >-
         ${{ env.SKIP != 'true' && (
         env.compilerClass == 'cygwin'
@@ -911,7 +912,7 @@ jobs:
         echo "BEGIN Pre Build - Exchange to a newer ArgTable config.guess for cygwin"
         set -x -v -e
         export PATH=/usr/local/bin:/usr/bin:/bin:/usr/sbin:/sbin
-        if [ ! -f "config.guess" ]; then cp timestamp_2026-05-17_config.guess.guess config.guess ; fi
+        if [ ! -f "config.guess" ]; then mv timestamp_2026-05-17_config.guess.guess config.guess ; fi
         echo "END Pre Build - Exchange to a newer ArgTable config.guess for cygwin"
 
     ####
@@ -946,6 +947,7 @@ jobs:
 
 
     - name: Pre Build - Exchange to a newer ArgTable config.sub for cygwin
+      id: exchangeNewerConfigSubforCygwin
       if: >-
         ${{ env.SKIP != 'true' && (
         env.compilerClass == 'cygwin'
@@ -961,7 +963,7 @@ jobs:
         echo "BEGIN Pre Build - Exchange to a newer ArgTable config.sub for cygwin"
         set -x -v -e
         export PATH=/usr/local/bin:/usr/bin:/bin:/usr/sbin:/sbin
-        if [ ! -f "config.sub" ]; then cp timestamp_2026-05-17_config.sub config.sub ; fi
+        if [ ! -f "config.sub" ]; then mv timestamp_2026-05-17_config.sub config.sub ; fi
         echo "END Pre Build - Exchange to a newer ArgTable config.sub for cygwin"
 
     ####
@@ -1061,6 +1063,50 @@ jobs:
           popd # from argtable2-13
         echo "New current directory: $(pwd)"
         echo "END   Configure, Build, and Install argtable2-13 for cygwin"
+
+
+    - name: Post Build - Exchange to an older ArgTable config.guess for cygwin
+      id: exchangeOlderConfigGuessforCygwin
+      if: >-
+        ${{ env.SKIP != 'true' && (
+        env.compilerClass == 'cygwin'
+        ) && steps.exchangeNewerConfigGuessforCygwin.outcome == 'success'
+        }}
+      env:
+        # cygwin OS variables
+        SHELLOPTS: igncr
+        CHERE_INVOKING: 1
+        # Msys OS variable
+        msystem: ${{ env.compilerEnv }}
+      run: |
+        echo "BEGIN Post Build - Exchange to an older ArgTable config.guess for cygwin"
+        set -x -v -e
+        export PATH=/usr/local/bin:/usr/bin:/bin:/usr/sbin:/sbin
+        echo "reverting to prevent CACHE-ING of config.guess"
+        if [ ! -f "config.guess" ]; then mv config.guess timestamp_2026-05-17_config.guess.guess  ; fi
+        echo "END   Post Build - Exchange to an older ArgTable config.guess for cygwin"
+
+
+    - name: Post Build - Exchange to an older ArgTable config.sub for cygwin
+      id: exchangeOlderConfigSubforCygwin
+      if: >-
+        ${{ env.SKIP != 'true' && (
+        env.compilerClass == 'cygwin'
+        ) && steps.exchangeNewerConfigSubforCygwin.outcome == 'success'
+        }}
+      env:
+        # cygwin OS variables
+        SHELLOPTS: igncr
+        CHERE_INVOKING: 1
+        # Msys OS variable
+        msystem: ${{ env.compilerEnv }}
+      run: |
+        echo "BEGIN Post Build - Exchange to an older ArgTable config.sub for cygwin"
+        set -x -v -e
+        export PATH=/usr/local/bin:/usr/bin:/bin:/usr/sbin:/sbin
+        echo "reverting to prevent CACHE-ING of config.sub"
+        if [ ! -f "config.sub" ]; then mv config.sub timestamp_2026-05-17_config.sub.guess  ; fi
+        echo "END   Post Build - Exchange to an older ArgTable config.sub for cygwin"
 
 
     - name: Autogen, Configure, Build comskip for ${{ matrix.compilerEnv }}
