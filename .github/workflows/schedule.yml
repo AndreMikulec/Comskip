@@ -1,0 +1,19 @@
+
+name: Scheduled Recurring Compskip Task
+
+on:
+  schedule:
+    # Runs at 2:00 a.m. UTC every day
+    - cron: '0 2 * * *'
+
+  # Best Practice: Include manual dispatch for on-demand testing
+  workflow_dispatch: 
+
+jobs:
+  run-daily-task:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v7
+      - name: Run script
+        run: echo "Executing scheduled daily task..."
