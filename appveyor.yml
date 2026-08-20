@@ -33,7 +33,6 @@ before_build:
   - if not exist argtable2-13.tar.gz               appveyor DownloadFile https://downloads.sourceforge.net/project/argtable/argtable/argtable-2.13/argtable2-13.tar.gz
 
 build_script:
-  - set MSYSTEM=UCRT64
   - set CHERE_INVOKING=yes
   - 7z x ffmpeg-5.0.1-full_build-shared.7z
   - C:\msys64\usr\bin\bash -lc "cd $(cygpath \"%APPVEYOR_BUILD_FOLDER%\") && tar xf argtable2-13.tar.gz && cd argtable2-13 && ./configure --build=x86_64-w64-mingw32 && make"
@@ -64,15 +63,15 @@ after_test:
   - # copy ffmpeg-5.0.1-full_build-shared\bin\avutil*.*               Export
   - # copy ffmpeg-5.0.1-full_build-shared\bin\swresample*.*           Export
   - cd                                                                Export
-  - 7z a %APPVEYOR_BUILD_FOLDER%\comskip-UCRT64-ffmpeg-5.0.1.zip      *
+  - 7z a %APPVEYOR_BUILD_FOLDER%\comskip-MINGW32-ffmpeg-5.0.1.zip      *
   - cd   %APPVEYOR_BUILD_FOLDER%
 
-  - if "%APPVEYOR_REPO_TAG%"=="false" move comskip-UCRT64-ffmpeg-5.0.1.zip                            apvid-01-comskip-UCRT64-ffmpeg-5.0.1.zip
-  - if "%APPVEYOR_REPO_TAG%"=="false" appveyor PushArtifact                                           apvid-01-comskip-UCRT64-ffmpeg-5.0.1.zip
+  - if "%APPVEYOR_REPO_TAG%"=="false" move comskip-MINGW32-ffmpeg-5.0.1.zip                            apvid-01-comskip-MINGW32-ffmpeg-5.0.1.zip
+  - if "%APPVEYOR_REPO_TAG%"=="false" appveyor PushArtifact                                            apvid-01-comskip-MINGW32-ffmpeg-5.0.1.zip
 
-  - if "%APPVEYOR_REPO_TAG%"=="true"  move comskip-UCRT64-ffmpeg-5.0.1.zip                                     apvid-01-comskip-%APPVEYOR_REPO_TAG_NAME%-UCRT64-ffmpeg-5.0.1.zip
-  - if "%APPVEYOR_REPO_TAG%"=="true"  appveyor PushArtifact                                                    apvid-01-comskip-%APPVEYOR_REPO_TAG_NAME%-UCRT64-ffmpeg-5.0.1.zip
-  - if "%APPVEYOR_REPO_TAG%"=="true"  move apvid-01-comskip-%APPVEYOR_REPO_TAG_NAME%-UCRT64-ffmpeg-5.0.1.zip   comskip-%APPVEYOR_REPO_TAG_NAME%-UCRT64-ffmpeg-5.0.1.zip  
+  - if "%APPVEYOR_REPO_TAG%"=="true"  move comskip-MINGW32-ffmpeg-5.0.1.zip                                     apvid-01-comskip-%APPVEYOR_REPO_TAG_NAME%-MINGW32-ffmpeg-5.0.1.zip
+  - if "%APPVEYOR_REPO_TAG%"=="true"  appveyor PushArtifact                                                     apvid-01-comskip-%APPVEYOR_REPO_TAG_NAME%-MINGW32-ffmpeg-5.0.1.zip
+  - if "%APPVEYOR_REPO_TAG%"=="true"  move apvid-01-comskip-%APPVEYOR_REPO_TAG_NAME%-MINGW32-ffmpeg-5.0.1.zip            comskip-%APPVEYOR_REPO_TAG_NAME%-MINGW32-ffmpeg-5.0.1.zip  
 
     # A graceful "exit" (if any) is only allowed _before_the _artifacts_ section.
     # If no tag exists, then do not bother to try to deploy(release to Github).
