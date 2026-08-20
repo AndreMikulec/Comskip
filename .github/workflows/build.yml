@@ -816,7 +816,6 @@ jobs:
 
         echo "END   Download, Quick Check, save version FFMPEGVERSION and FFMPEGSHORTVERSION of, ffmpeg from the ${{ matrix.provider_altarchive_url }}"
 
-
     ####
 
     - name: Pre Build - Cache ArgTable Source Code from Sourceforge for cygwin
@@ -886,7 +885,7 @@ jobs:
       if: >- 
         ${{ env.SKIP != 'true' && ( 
         env.compilerClass == 'cygwin'
-        ) && steps.downloadConfigGuess.outcome == 'failure
+        ) && steps.downloadConfigGuess.outcome == 'failure'
         }}
       env:
         # cygwin OS variables
@@ -898,7 +897,7 @@ jobs:
         echo "BEGIN Pre Build - Exchange to a newer ArgTable config.guess for cygwin"
         set -x -v -e
         export PATH=/usr/local/bin:/usr/bin:/bin:/usr/sbin:/sbin
-        if [ ! -f config.guess ]; then cp timestamp_2026-05-17_config.guess.guess config.guess ; fi
+        if [ ! -f "config.guess" ]; then cp timestamp_2026-05-17_config.guess.guess config.guess ; fi
         echo "END Pre Build - Exchange to a newer ArgTable config.guess for cygwin"
 
     ####
@@ -936,7 +935,7 @@ jobs:
       if: >- 
         ${{ env.SKIP != 'true' && ( 
         env.compilerClass == 'cygwin'
-        ) && steps.downloadConfigSub.outcome == 'failure
+        ) && steps.downloadConfigSub.outcome == 'failure'
         }}
       env:
         # cygwin OS variables
@@ -948,7 +947,7 @@ jobs:
         echo "BEGIN Pre Build - Exchange to a newer ArgTable config.sub for cygwin"
         set -x -v -e
         export PATH=/usr/local/bin:/usr/bin:/bin:/usr/sbin:/sbin
-        if [ ! -f config.sub ]; then cp timestamp_2026-05-17_config.sub config.sub ; fi
+        if [ ! -f "config.sub" ]; then cp timestamp_2026-05-17_config.sub config.sub ; fi
         echo "END Pre Build - Exchange to a newer ArgTable config.sub for cygwin"
 
     ####
@@ -999,10 +998,11 @@ jobs:
           cp ../config.sub .
           echo "Age of the file config.sub"
           ls -alrt config.sub
-          ./config.guess
-          ./config.sub --version
+          ./config.guess --version
+          ./config.sub   --version
           set +x +v +e
           ./configure
+          set -x -v -e
           # argtable2-13/INSTALL file of instructions
           make
           make install
