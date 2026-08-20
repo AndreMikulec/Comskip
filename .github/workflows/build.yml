@@ -29,7 +29,7 @@ on:
   workflow_dispatch:
 
 # FUTURE
-# GitHub Actions scheduled workflows (the on: schedule trigger) 
+# GitHub Actions scheduled workflows (the on: schedule trigger)
 #   must exist on the default branch (usually main or master) of your repository to be triggered.
 
 permissions:
@@ -51,17 +51,17 @@ jobs:
         export IS_SKIPTAG="notset"
         export IS_SKIPTAG="${{ github.ref_type == 'tag' && startsWith(github.ref_name, 'SKIP') && 'true' || 'false' }}"
         if [ "${IS_SKIPTAG}" == "" ]; then export IS_SKIPTAG="notset" ; fi
-        echo  "IS_SKIPTAG=${IS_SKIPTAG}" >> ${GITHUB_OUTPUT} 
+        echo  "IS_SKIPTAG=${IS_SKIPTAG}" >> ${GITHUB_OUTPUT}
 
-        echo  "IS_SKIPTAG: ${IS_SKIPTAG}" 
+        echo  "IS_SKIPTAG: ${IS_SKIPTAG}"
 
         echo "END   Pre-build check"
-    
+
     outputs:
       IS_SKIPTAG: ${{ steps.build_check.outputs.IS_SKIPTAG }}
 
   build:
-    name: >- 
+    name: >-
       matid ${{ matrix.matid }} ${{ matrix.compilerEnv }} ${{ matrix.provider }} ${{ matrix.ExtraJobTitleInfo != 'notset' && matrix.ExtraJobTitleInfo }}
     needs: setup
     runs-on: ${{ matrix.os }}
@@ -108,7 +108,7 @@ jobs:
           provider: repository
           GithubActionsIgnoreFail: false
 
-        # Explanation of "common" Matrix items - "platorm", "provider", "ExtraJobTitleInfo", 
+        # Explanation of "common" Matrix items - "platorm", "provider", "ExtraJobTitleInfo",
           # "GithubActionsIgnoreFail", and "SKIPImmune"
         - matid: '04'
           os: windows-2025-vs2026
@@ -122,8 +122,8 @@ jobs:
           # the latest ffmpeg version master shared
           provider_altarchive_url: https://github.com/BtbN/FFmpeg-Builds/releases/download/latest/ffmpeg-master-latest-win64-gpl-shared.zip
           # Currently, "ExtraJobTitleInfo" is only used in the job name
-          ExtraJobTitleInfo: ffmpeg-master-latest
-          # Currently, controls "continue-on-error" 
+          ExtraJobTitleInfo: ffmpeg-master the Latest
+          # Currently, controls "continue-on-error"
           GithubActionsIgnoreFail: false
           # SKIP tag is pushed, run JUST THIS only matrix item "SKIPImmune"
           SKIPImmune: true
@@ -136,7 +136,7 @@ jobs:
           provider: altarchive
           # shared FFmpeg full versions only please
           provider_altarchive_url: https://github.com/BtbN/FFmpeg-Builds/releases/download/latest/ffmpeg-n9.0-latest-win64-gpl-shared-9.0.zip
-          ExtraJobTitleInfo: ffmpeg-n9.0-latest
+          ExtraJobTitleInfo: ffmpeg-n9.0 the Latest
           GithubActionsIgnoreFail: false
 
         - matid: '06'
@@ -148,10 +148,21 @@ jobs:
           # shared FFmpeg full versions only please
           # the latest ffmpeg version 8 shared
           provider_altarchive_url: https://github.com/BtbN/FFmpeg-Builds/releases/download/latest/ffmpeg-n8.1-latest-win64-gpl-shared-8.1.zip
-          ExtraJobTitleInfo: ffmpeg-n8.1-latest
+          ExtraJobTitleInfo: ffmpeg-n8.1 the Latest
           GithubActionsIgnoreFail: false
 
         - matid: '07'
+          os: windows-2025-vs2026
+          platform: windows-mingw
+          compilerEnv: UCRT64
+          shellEnv: msys2 {0}
+          provider: altarchive
+          # shared FFmpeg full versions only please
+          provider_altarchive_url: https://github.com/BtbN/FFmpeg-Builds/releases/download/autobuild-2026-08-16-13-00/ffmpeg-n7.1.5-16-g9a4bb2c579-win64-gpl-shared-7.1.zip
+          ExtraJobTitleInfo: ffmpeg-n7.1.5-16 the Last
+          GithubActionsIgnoreFail: false
+
+        - matid: '08'
           os: windows-2025-vs2026
           platform: windows-mingw
           compilerEnv: UCRT64
@@ -162,7 +173,7 @@ jobs:
           ExtraJobTitleInfo: ffmpeg-n6.1.2-192 the Last
           GithubActionsIgnoreFail: false
 
-        - matid: '08'
+        - matid: '09'
           os: windows-2025-vs2026
           platform: windows-mingw
           compilerEnv: UCRT64
@@ -201,41 +212,41 @@ jobs:
 #         provider: repository
 #         GithubActionsIgnoreFail: false
 
-        - matid: '09'
+        - matid: '10'
           os: macos-latest
           platform: macos
           ffmpeg_version: ffmpeg9
           ExtraJobTitleInfo: macos ffmpeg9
           GithubActionsIgnoreFail: false
 
-        - matid: '10'
+        - matid: '11'
           os: macos-latest
           platform: macos
           ffmpeg_version: ffmpeg8
           ExtraJobTitleInfo: macos ffmpeg8
           GithubActionsIgnoreFail: false
 
-        - matid: '11'
+        - matid: '12'
           os: macos-latest
           platform: macos
           ffmpeg_version: ffmpeg7
           ExtraJobTitleInfo: macos ffmpeg7
           GithubActionsIgnoreFail: false
- 
-        - matid: '12'
+
+        - matid: '13'
           os: macos-latest
           platform: macos
           ffmpeg_version: ffmpeg6
           ExtraJobTitleInfo: macos ffmpeg6
           GithubActionsIgnoreFail: false
- 
-        - matid: '13'
+
+        - matid: '14'
           os: macos-latest
           platform: macos
           ffmpeg_version: ffmpeg5
           ExtraJobTitleInfo: macos ffmpeg5
           GithubActionsIgnoreFail: false
- 
+
     defaults:
       run:
         shell: ${{ matrix.shellEnv || 'bash' }}
@@ -314,8 +325,8 @@ jobs:
     #
     # APRIL MAY SEPTEMER 2025
     # ubuntu builds
-    # macos@ffmpeg6, macos@ffmpeg7 builds 
-    # msys2@ffmpeg5 built one year ago, 
+    # macos@ffmpeg6, macos@ffmpeg7 builds
+    # msys2@ffmpeg5 built one year ago,
     # macos@ffmpeg5 DID NOT BUILD
     # https://github.com/heitbaum/Comskip/actions/runs/17692079752/job/50286990604
     # APR 2025
@@ -334,8 +345,8 @@ jobs:
     # https://github.com/sgscaffidi3/Comskip/commit/a140b6ac8bc8f596729e9052819affc779c3b377
     #
     - name: Checkout
-      if: >- 
-        ${{ env.SKIP != 'true' 
+      if: >-
+        ${{ env.SKIP != 'true'
         }}
       uses: actions/checkout@v6
       with:
@@ -354,9 +365,9 @@ jobs:
 
 
     - name: Windows Machine Stats for $${{ matrix.os }}
-      if: >- 
-        ${{ env.SKIP != 'true' && ( 
-        matrix.os == 'windows-2025-vs2026' 
+      if: >-
+        ${{ env.SKIP != 'true' && (
+        matrix.os == 'windows-2025-vs2026'
         ) }}
       shell: cmd
       run: |
@@ -365,9 +376,9 @@ jobs:
 
     - name: General Shell Environment Variables for windows-2025-vs2026 made using Bash
       # Early and RARE case that I use "matrix." variable in "if"
-      if: >- 
-        ${{ env.SKIP != 'true' && ( 
-        matrix.os == 'windows-2025-vs2026' 
+      if: >-
+        ${{ env.SKIP != 'true' && (
+        matrix.os == 'windows-2025-vs2026'
         ) }}
       shell: bash                     # redundant, because it is my defined matrix default
       run: |
@@ -392,9 +403,9 @@ jobs:
       # OUT OF TIME RIGHT NOW.  IN THE FUTURE, CONVERT EVERYTHING "BELOW" "TO" BASH
     - name: General Shell Environment Variables for widows-latest using Powershell
       # Early and RARE case that I use "matrix." variable in "if"
-      if: >- 
-        ${{ env.SKIP != 'true' && ( 
-        matrix.os == 'windows-2025-vs2026' 
+      if: >-
+        ${{ env.SKIP != 'true' && (
+        matrix.os == 'windows-2025-vs2026'
         ) }}
       shell: powershell
       run: |
@@ -516,8 +527,8 @@ jobs:
 
 
     - name: Setup
-      if: >- 
-        ${{ env.SKIP != 'true' 
+      if: >-
+        ${{ env.SKIP != 'true'
         }}
       shell: bash
       run: |
@@ -528,9 +539,9 @@ jobs:
 
 
     - name: Configure Apt packages
-      if: >- 
-        ${{ env.SKIP != 'true' && ( 
-        matrix.platform == 'linux' 
+      if: >-
+        ${{ env.SKIP != 'true' && (
+        matrix.platform == 'linux'
         ) }}
       run: |
         sudo apt-get update
@@ -541,9 +552,9 @@ jobs:
         sudo apt-get install -y autoconf libtool git build-essential libargtable2-dev libavformat-dev libswscale-dev libsdl1.2-dev
 
     - name: Configure Brew packages ffmpeg5
-      if: >- 
-        ${{ env.SKIP != 'true' && ( 
-        matrix.ffmpeg_version == 'ffmpeg5' 
+      if: >-
+        ${{ env.SKIP != 'true' && (
+        matrix.ffmpeg_version == 'ffmpeg5'
         ) }}
       run: |
         system_profiler SPSoftwareDataType SPHardwareDataType
@@ -552,9 +563,9 @@ jobs:
 
 
     - name: Configure Brew packages ffmpeg6
-      if: >- 
-        ${{ env.SKIP != 'true' && ( 
-        matrix.ffmpeg_version == 'ffmpeg6' 
+      if: >-
+        ${{ env.SKIP != 'true' && (
+        matrix.ffmpeg_version == 'ffmpeg6'
         ) }}
       run: |
         system_profiler SPSoftwareDataType SPHardwareDataType
@@ -562,9 +573,9 @@ jobs:
         brew link ffmpeg@6
 
     - name: Configure Brew packages ffmpeg7
-      if: >- 
-        ${{ env.SKIP != 'true' && ( 
-        matrix.ffmpeg_version == 'ffmpeg7' 
+      if: >-
+        ${{ env.SKIP != 'true' && (
+        matrix.ffmpeg_version == 'ffmpeg7'
         ) }}
       run: |
         system_profiler SPSoftwareDataType SPHardwareDataType
@@ -572,9 +583,9 @@ jobs:
 
 
     - name: Configure Brew packages ffmpeg8
-      if: >- 
-        ${{ env.SKIP != 'true' && ( 
-        matrix.ffmpeg_version == 'ffmpeg8' 
+      if: >-
+        ${{ env.SKIP != 'true' && (
+        matrix.ffmpeg_version == 'ffmpeg8'
         ) }}
       run: |
         system_profiler SPSoftwareDataType SPHardwareDataType
@@ -585,9 +596,9 @@ jobs:
     #  Add the MSYS2 package "unzip" to extract shareed FFmpeg files from github.com/BtbN
     - name: Setup for MSYS2
       id: msys2_install
-      if: >- 
-        ${{ env.SKIP != 'true' && ( 
-        env.compilerClass == 'MSYS2' 
+      if: >-
+        ${{ env.SKIP != 'true' && (
+        env.compilerClass == 'MSYS2'
         ) }}
       uses: msys2/setup-msys2@v2
       with:
@@ -615,14 +626,14 @@ jobs:
     - name: Set up for cygwin
       # In MSYS2, package autotools is the cygwin package autoconf.
       # In MSYS2, package gcc is the cygwin package gcc-core.
-      # In cygwin, no package "argtable2-13" or similar exists 
+      # In cygwin, no package "argtable2-13" or similar exists
       # Add the cygwin package, "curl" to download the "argtable2-13" source contents (no longer using)
       # Add the cygwin package, "tar" to extract the "argtable2-13" source contents
       # Add the cygwin package "zip" to create a release bundle
       # Therefore, see the configure, build, and install in step far below
-      if: >- 
-        ${{ env.SKIP != 'true' && ( 
-        env.compilerClass == 'cygwin' 
+      if: >-
+        ${{ env.SKIP != 'true' && (
+        env.compilerClass == 'cygwin'
         ) }}
       uses: cygwin/cygwin-install-action@v6
       with:
@@ -669,9 +680,9 @@ jobs:
 
 
     - name: Download, Quick Check, save version FFMPEGVERSION and FFMPEGSHORTVERSION of, ffmpeg from the ${{ matrix.provider_altarchive_url }}
-      if: >- 
-        ${{ env.SKIP != 'true' && ( 
-        env.compilerClass == 'MSYS2' ||  env.compilerClass == 'cygwin' 
+      if: >-
+        ${{ env.SKIP != 'true' && (
+        env.compilerClass == 'MSYS2' ||  env.compilerClass == 'cygwin'
         ) }}
       env:
         # cygwin OS variables
@@ -705,7 +716,7 @@ jobs:
         #
         # FFmpeg ... Builds
         # https://github.com/BtbN/FFmpeg-Builds/blob/7b5dc8c88b43af71a7284f7f8919d1e6b004ebc1/README.md
-        # 
+        #
         # Builds run daily at 12:00 UTC (or GitHubs idea of that time) and are automatically released on success.
         # Release Retention Policy
         # The last build of each month is kept for two years.
@@ -720,10 +731,13 @@ jobs:
         #
         # The Last - 6.1
         # https://github.com/BtbN/FFmpeg-Builds/releases/download/autobuild-2025-08-31-13-00/ffmpeg-n6.1.3-win64-gpl-shared-6.1.zip
-        # 
+        #
+        # The Last - 7.1
+        # https://github.com/BtbN/FFmpeg-Builds/releases/download/autobuild-2026-08-16-13-00/ffmpeg-n7.1.5-16-g9a4bb2c579-win64-gpl-shared-7.1.zip
+        #
         # Latest - 8.1 - https://github.com/FFmpeg/FFmpeg/tree/release/8.1
         # https://github.com/BtbN/FFmpeg-Builds/releases/download/latest/ffmpeg-n8.1-latest-win64-gpl-shared-8.1.zip
-        # 
+        #
         # Latest - 9.0 - https://github.com/FFmpeg/FFmpeg/tree/release/9.0
         # https://github.com/BtbN/FFmpeg-Builds/releases/download/latest/ffmpeg-n9.0-latest-win64-gpl-shared-9.0.zip
         #
@@ -739,7 +753,7 @@ jobs:
           # https://linuxcommandlibrary.com/man/pacman-upgrade
           # https://wiki.archlinux.org/title/Pacman
           if [ $(echo "${provider_altarchive_url}" | grep -q "msys2.org/packages" && echo 0) ]
-          then 
+          then
             echo "Start installing the alternate archive version."
             pacman -U           --verbose --noconfirm --needed "${provider_altarchive_url}"
             echo "Finish installing the alternate archive version."
@@ -749,7 +763,7 @@ jobs:
             ffmpeg -version
           fi
           if [ $(echo "${provider_altarchive_url}" | grep -q "github.com/BtbN" && echo 0) ]
-          then 
+          then
             curl  --verbose -L -o win-gpl-shared.zip "${provider_altarchive_url}"
             unzip                 win-gpl-shared.zip
             ls -alrt ffmpeg-*
@@ -777,23 +791,23 @@ jobs:
         fi
 
         # How to read an ffmpeg version string
-        # 
+        #
         # + ffmpeg -version
         # ffmpeg version n8.1.1-7-g3728de467d-20260519 Copyright (c) 2000-2026 the FFmpeg developers
-        # 
+        #
         # + ffmpeg -version
         # ffmpeg version N-124549-g1572784128-20260519 Copyright (c) 2000-2026 the FFmpeg developers
-        # 
+        #
         # 1. Release Builds (Stable)
         # MAJOR.MINOR.PATCH
-        # 
+        #
         # 2. Nightly/Git Builds (Development)
         # N-100221-g18befac5da
-        # 
-        # N-XXXXX: The "N" indicates a nightly build. 
+        #
+        # N-XXXXX: The "N" indicates a nightly build.
         # The number is typically a sequential build or commit count.
         # g[hash]: The "g" stands for Git, followed by the Git commit hash
-        # 
+        #
         # 3. Library Versions
         # (at the bottom of the output)
 
@@ -820,9 +834,9 @@ jobs:
 
     - name: Pre Build - Cache ArgTable Source Code from Sourceforge for cygwin
       id: cacheArgTableSourceCode
-      if: >- 
-        ${{ env.SKIP != 'true' && ( 
-        env.compilerClass == 'cygwin' 
+      if: >-
+        ${{ env.SKIP != 'true' && (
+        env.compilerClass == 'cygwin'
         ) }}
       uses: actions/cache@v6
       with:
@@ -839,11 +853,11 @@ jobs:
       #
     - name: Pre Build - Download ArgTable Source Code from Sourceforge for cygwin
       id: downloadArgTableSourceCode
-      if: >- 
-        ${{ env.SKIP != 'true' && ( 
-        env.compilerClass == 'cygwin' 
-        ) && 
-        steps.cacheArgTableSourceCode.outputs.cache-hit != 'true' 
+      if: >-
+        ${{ env.SKIP != 'true' && (
+        env.compilerClass == 'cygwin'
+        ) &&
+        steps.cacheArgTableSourceCode.outputs.cache-hit != 'true'
         }}
       uses: suisei-cn/actions-download-file@v1.6.1
       with:
@@ -854,9 +868,9 @@ jobs:
 
     - name: Pre Build - Cache ArgTable config.guess for cygwin
       id: cacheConfigGuess
-      if: >- 
-        ${{ env.SKIP != 'true' && ( 
-        env.compilerClass == 'cygwin' 
+      if: >-
+        ${{ env.SKIP != 'true' && (
+        env.compilerClass == 'cygwin'
         ) }}
       uses: actions/cache@v6
       with:
@@ -869,11 +883,11 @@ jobs:
     - name: Pre Build - Download ArgTable config.guess for cygwin
       id: downloadConfigGuess
       continue-on-error: true
-      if: >- 
-        ${{ env.SKIP != 'true' && ( 
-        env.compilerClass == 'cygwin' 
-        ) && 
-        steps.cacheConfigGuess.outputs.cache-hit != 'true' 
+      if: >-
+        ${{ env.SKIP != 'true' && (
+        env.compilerClass == 'cygwin'
+        ) &&
+        steps.cacheConfigGuess.outputs.cache-hit != 'true'
         }}
       uses: suisei-cn/actions-download-file@v1.6.1
       with:
@@ -882,8 +896,8 @@ jobs:
 
 
     - name: Pre Build - Exchange to a newer ArgTable config.guess for cygwin
-      if: >- 
-        ${{ env.SKIP != 'true' && ( 
+      if: >-
+        ${{ env.SKIP != 'true' && (
         env.compilerClass == 'cygwin'
         ) && steps.downloadConfigGuess.outcome == 'failure'
         }}
@@ -904,9 +918,9 @@ jobs:
 
     - name: Pre Build - Cache ArgTable config.sub for cygwin
       id: cacheConfigSub
-      if: >- 
-        ${{ env.SKIP != 'true' && ( 
-        env.compilerClass == 'cygwin' 
+      if: >-
+        ${{ env.SKIP != 'true' && (
+        env.compilerClass == 'cygwin'
         ) }}
       uses: actions/cache@v6
       with:
@@ -919,11 +933,11 @@ jobs:
     - name: Pre Build - Download ArgTable config.sub for cygwin
       id: downloadConfigSub
       continue-on-error: true
-      if: >- 
-        ${{ env.SKIP != 'true' && ( 
-        env.compilerClass == 'cygwin' 
-        ) && 
-        steps.cacheConfigSub.outputs.cache-hit != 'true' 
+      if: >-
+        ${{ env.SKIP != 'true' && (
+        env.compilerClass == 'cygwin'
+        ) &&
+        steps.cacheConfigSub.outputs.cache-hit != 'true'
         }}
       uses: suisei-cn/actions-download-file@v1.6.1
       with:
@@ -932,8 +946,8 @@ jobs:
 
 
     - name: Pre Build - Exchange to a newer ArgTable config.sub for cygwin
-      if: >- 
-        ${{ env.SKIP != 'true' && ( 
+      if: >-
+        ${{ env.SKIP != 'true' && (
         env.compilerClass == 'cygwin'
         ) && steps.downloadConfigSub.outcome == 'failure'
         }}
@@ -953,9 +967,9 @@ jobs:
     ####
 
     - name: Configure, Build, and Install argtable2-13 for cygwin
-      if: >- 
-        ${{ env.SKIP != 'true' && ( 
-        env.compilerClass == 'cygwin' 
+      if: >-
+        ${{ env.SKIP != 'true' && (
+        env.compilerClass == 'cygwin'
         ) }}
       env:
         # cygwin OS variables
@@ -975,7 +989,7 @@ jobs:
         # Argtable is an ANSI C command line parser.
         # https://argtable.sourceforge.io/
         #
-        # Dockerfile in 
+        # Dockerfile in
         #   wget http://prdownloads.sourceforge.net/argtable/argtable2-13.tar.gz
         #   tar xzf argtable2-13.tar.gz
         #   cd argtable2-13/ && ./configure && make && make install
@@ -1001,7 +1015,45 @@ jobs:
           ./config.guess --version
           ./config.sub   --version
           set +x +v +e
-          ./configure
+          #
+          # SEEN AUG 20 2026
+          # From gcc 13 to gcc 14, how have implicit function declaration handline changed ?
+          # ...
+          # Gemini AI answer ...
+          # In GCC 14, implicit function declarations are treated as a hard compile-time error
+          # (-Werror=implicit-function-declaration) instead of just generating a warning as they did
+          # in GCC 13 and prior versions.
+          #
+          #   arg_int.c:89:8: warning: implicit declaration of function 'toupper' [-Wimplicit-function-declaration]
+          #   arg_int.c:89:8: note: include '<ctype.h>' or provide a declaration of 'toupper
+          #
+          # Calling a function without a prior prototype or definition is no longer permitted by default.
+          #
+          # 13.4.0-1  x86_64  ...  2025-07-23 05:27
+          # 14.4.0-1  x86_64  ...  2026-07-01 18:52
+          # https://www.cygwin.com/packages/summary/mingw64-i686-gcc-core.html
+          #
+          # solution 1 - patch (BETTER)
+          # https://github.com/msys2/MINGW-packages/blob/master/mingw-w64-argtable/001-missing-ctype.patch
+          # Add missing ctype.h and enable aarch64 builds
+          # https://github.com/msys2/MINGW-packages/commit/8d64ae169b4d04b551022916c3dafbc54da8a2ee
+          #
+          # solution 2 (TEMPORARY)
+          #
+          # What C flag is used to turn
+          # back the behavior "error: implicit declaration of function"
+          # back to "warning: implicit declaration of function" ?
+          #
+          # Gemini AI answer ...
+          # -Wno-error=implicit-function-declaration
+          #
+          # Therefore, now do ...
+          # from
+          # ./configure
+          # to
+          # CFLAGS="-Wno-error=implicit-function-declaration" ./configure
+          #
+          CFLAGS="-Wno-error=implicit-function-declaration" ./configure
           set -x -v -e
           # argtable2-13/INSTALL file of instructions
           make
@@ -1012,9 +1064,9 @@ jobs:
 
 
     - name: Autogen, Configure, Build comskip for ${{ matrix.compilerEnv }}
-      if: >- 
-        ${{ env.SKIP != 'true' && ( 
-        env.compilerClass == 'MSYS2' || env.compilerClass == 'cygwin' 
+      if: >-
+        ${{ env.SKIP != 'true' && (
+        env.compilerClass == 'MSYS2' || env.compilerClass == 'cygwin'
         ) }}
       env:
         # cygwin OS variables
@@ -1037,15 +1089,15 @@ jobs:
         echo "uname -a"
         uname -a
 
-        # pkg-config files (ending in .pc) are metadata files used by the 
-        #   pkg-config tool to provide the necessary compiler and linker flags 
+        # pkg-config files (ending in .pc) are metadata files used by the
+        #   pkg-config tool to provide the necessary compiler and linker flags
         #     for using installed libraries.
         # https://unix.stackexchange.com/questions/241887/building-code-from-source-and-adding-them-to-your-path
         # useful after "make install" of argtable2-13
 
           # Furthermore,
-          # comskip, if using argtable2-13 - 
-          # (1) argtable2-13 is not in a/the respository 
+          # comskip, if using argtable2-13 -
+          # (1) argtable2-13 is not in a/the respository
           # (2) using PKG_CONFIG_PATH  to find the .pc file
           # (3) make
 
@@ -1055,13 +1107,13 @@ jobs:
           # https://github.com/erikkaashoek/Comskip/blob/a140b6ac8bc8f596729e9052819affc779c3b377/appveyor.yml#L21
           # # argtable2-13
           # ./configure --build=x86_64-w64-mingw32
-          # make 
+          # make
           # autogen.sh
           # NOTE, -lswresample SEEMS now required
           # # comskip beginning-of-line inputs to ./configure
-          #     argtable2_CFLAGS='-Iargtable2-13/src' argtable2_LIBS='-Largtable2-13/src/.libs -largtable2' 
-          #     ffmpeg_CFLAGS='-Iffmpeg-5.0.1-full_build-shared/include' 
-          #     ffmpeg_LIBS='-Lffmpeg-5.0.1-full_build-shared/lib -lavutil -lavformat -lavcodec -lswscale' 
+          #     argtable2_CFLAGS='-Iargtable2-13/src' argtable2_LIBS='-Largtable2-13/src/.libs -largtable2'
+          #     ffmpeg_CFLAGS='-Iffmpeg-5.0.1-full_build-shared/include'
+          #     ffmpeg_LIBS='-Lffmpeg-5.0.1-full_build-shared/lib -lavutil -lavformat -lavcodec -lswscale'
           # ./configure
           # # comskip build
           # make
@@ -1087,7 +1139,7 @@ jobs:
         #
         # See "... ./configure" at
         # NOTE -lswresample SEEMS now required
-        # ffmpeg_CFLAGS='-Iwin-gpl-shared/include' ffmpeg_LIBS='-Lwin-gpl-shared/lib 
+        # ffmpeg_CFLAGS='-Iwin-gpl-shared/include' ffmpeg_LIBS='-Lwin-gpl-shared/lib
         # -lavutil -lavformat -lavcodec -lswscale' ./configure
         # https://github.com/erikkaashoek/Comskip/blob/a140b6ac8bc8f596729e9052819affc779c3b377/appveyor.yml#L21
         # https://ci.appveyor.com/project/erikkaashoek/comskip/builds/51910208
@@ -1101,7 +1153,7 @@ jobs:
         fi
 
         if [ "${OperatingSystem}" == "Msys" ]
-        then  
+        then
           make
           # comskip.exe
           # comskip-gui.exe # needs the correct package support to produce comskip-gui.exe
@@ -1115,16 +1167,16 @@ jobs:
           # make: *** [Makefile:704: comskip_gui-mpeg2dec.o] Error 1
           # make comskip-gui.exe
           # make: *** [Makefile:704: comskip_gui-mpeg2dec.o] Error 1
-          # The ES_CONTINUOUS error means your compiler is 
-          #   trying to use the Windows API flag 
-          #     for SetThreadExecutionState without first declaring or importing it. 
+          # The ES_CONTINUOUS error means your compiler is
+          #   trying to use the Windows API flag
+          #     for SetThreadExecutionState without first declaring or importing it.
           #       include <windows.h>
-          # If you get a linker error after resolving the undeclared identifier, 
+          # If you get a linker error after resolving the undeclared identifier,
           #   make sure your project links against Kernel32.lib
-          # If you are translating this for a C# or Java (JNA) project, 
+          # If you are translating this for a C# or Java (JNA) project,
           #   ES_CONTINUOUS is a constant that you must define yourself.
           #
-          # 
+          #
           # make: *** [Makefile:704: comskip_gui-mpeg2dec.o] Error 1
           #
           # just MAKE this
@@ -1150,7 +1202,7 @@ jobs:
         #   # if [ $(ls win-gpl-shared/bin/swscale*.*    > /dev/null 2>&1 && echo 0) ]; then cp win-gpl-shared/bin/swscale*.*     Export; fi
         #   # if [ $(ls win-gpl-shared/bin/avutil*.*     > /dev/null 2>&1 && echo 0) ]; then cp win-gpl-shared/bin/avutil*.*      Export; fi
         #   # if [ $(ls win-gpl-shared/bin/swresample*.* > /dev/null 2>&1 && echo 0) ]; then cp win-gpl-shared/bin/swresample*.*  Export; fi
-        # 
+        #
         #   # NOT USEFUL
         #   # MSYS2 files from the MSYS FFmpeg package xor (previous) set above ...
         #   # if [ $(ls ${MSYSTEM_PREFIX}/bin/avcodec*.*    > /dev/null 2>&1 && echo 0) ]; then cp ${MSYSTEM_PREFIX}/bin/avcodec*.*     Export; fi
@@ -1160,13 +1212,13 @@ jobs:
         #   # if [ $(ls ${MSYSTEM_PREFIX}/bin/swresample*.* > /dev/null 2>&1 && echo 0) ]; then cp ${MSYSTEM_PREFIX}/bin/swresample*.*  Export; fi
         # fi
 
-    # Save (before the test 
+    # Save (before the test
     # to use to see if the comskip executable works OUTSIDE the Github Actions environment
     - name: For Export Upload Artifact of matid-${{ matrix.matid }}-comskip-${{ matrix.compilerEnv == 'notset' && 'native'  || matrix.compilerEnv }}-arch-${{ ( matrix.Architecture == 'notset' || matrix.Architecture == 'x64' ) && 'x64' || 'x86' }}-${{ github.ref_type }}-${{ github.ref_name }}-${{ matrix.provider }}
-      if: >- 
-        ${{ env.SKIP != 'true' && 
-        ! ( github.ref_type == 'tag' && startsWith(github.ref_name, 'SKIP') ) && ( 
-        env.compilerClass == 'MSYS2' || env.compilerClass == 'cygwin' 
+      if: >-
+        ${{ env.SKIP != 'true' &&
+        ! ( github.ref_type == 'tag' && startsWith(github.ref_name, 'SKIP') ) && (
+        env.compilerClass == 'MSYS2' || env.compilerClass == 'cygwin'
         ) }}
       uses: actions/upload-artifact@v7
       with:
@@ -1179,9 +1231,9 @@ jobs:
 
     - name: Pre Test compskip for ${{ matrix.compilerEnv }} - Cache Test Video
       id: cacheTestVideo
-      if: >- 
-        ${{ env.SKIP != 'true' && ( 
-        env.compilerClass == 'MSYS2' || env.compilerClass == 'cygwin' 
+      if: >-
+        ${{ env.SKIP != 'true' && (
+        env.compilerClass == 'MSYS2' || env.compilerClass == 'cygwin'
         ) }}
       uses: actions/cache@v5
       with:
@@ -1193,11 +1245,11 @@ jobs:
 
     - name: Pre Test compskip for ${{ matrix.compilerEnv }} - Download Test Video
       id: downloadTestVideo
-      if: >- 
-        ${{ env.SKIP != 'true' && ( 
-        env.compilerClass == 'MSYS2' || env.compilerClass == 'cygwin' 
-        ) && 
-        steps.cacheTestVideo.outputs.cache-hit != 'true' 
+      if: >-
+        ${{ env.SKIP != 'true' && (
+        env.compilerClass == 'MSYS2' || env.compilerClass == 'cygwin'
+        ) &&
+        steps.cacheTestVideo.outputs.cache-hit != 'true'
         }}
       uses: suisei-cn/actions-download-file@v1.6.1
       with:
@@ -1211,9 +1263,9 @@ jobs:
     # Here in Github Actions "./comskip --scf ten-copy.mkv" ALWAYS FAILS (for some unknown reason)
     # Outside of Github Actions, I tested "compskip."  It works just fine!
     - name: Test compskip for MSYS2
-      if: >- 
-        ${{ env.SKIP != 'true' && ( 
-        env.compilerClass == 'MSYS2' 
+      if: >-
+        ${{ env.SKIP != 'true' && (
+        env.compilerClass == 'MSYS2'
         ) }}
       env:
         # cygwin OS variables
@@ -1238,7 +1290,7 @@ jobs:
 
         ls -alrt comskip
         # comskip --help" always returns "$?" == "2"
-        # Quick Test 
+        # Quick Test
         # Using ( "time" instead of "true", becuase "time" gives Github Actions output)
         ./comskip --help || time
 
@@ -1270,11 +1322,11 @@ jobs:
 
 
     - name: Prep Artifact for Distribution Release
-      if: >- 
-        ${{ env.SKIP != 'true' && 
-        github.ref_type == 'tag' && 
-        ! startsWith(github.ref_name, 'SKIP') && 
-        ( env.compilerClass == 'MSYS2' ||  env.compilerClass == 'cygwin' ) 
+      if: >-
+        ${{ env.SKIP != 'true' &&
+        github.ref_type == 'tag' &&
+        ! startsWith(github.ref_name, 'SKIP') &&
+        ( env.compilerClass == 'MSYS2' ||  env.compilerClass == 'cygwin' )
         }}
       env:
         # cygwin OS variables
@@ -1303,36 +1355,36 @@ jobs:
     # Common github.event_name Values
     #
     # push                    - Triggered by code being pushed to a branch or a tag creation.
-    # pull_request            - Triggered by pull request activity 
+    # pull_request            - Triggered by pull request activity
     #                           (e.g., opened, synchronized, closed).workflow_dispatch
     #                         - Triggered manually by a user in the GitHub UI or via API.
     # schedule                - Triggered by a cron expression.
     # repository_dispatch     - Triggered by a custom webhook API call.
     # issues or issue_comment - Triggered by activities happening on GitHub Issues
-    # 
+    #
     # Common Values github.ref_type Values
-    # 
+    #
     # branch     - The event was triggered by a branch (e.g., a push to a branch).
-    # tag        - The event was triggered by a Git tag 
+    # tag        - The event was triggered by a Git tag
     #              (e.g., creating a new release tag).
-    # repository - Occurs in specific contexts like a CreateEvent 
+    # repository - Occurs in specific contexts like a CreateEvent
     #              when an entire repository is created.
     #
     # The github.ref_name context variable evaluates to the
-    # short name of the branch or tag that triggered a GitHub Actions workflow run. 
-    # 
+    # short name of the branch or tag that triggered a GitHub Actions workflow run.
+    #
     # Its value depends entirely on the event that triggered the pipeline
-    # 
+    #
     # Branches      - Returns the branch name (e.g., main, development, feature-branch-1).
     # Tags          - Returns the release or tag name (e.g., v1.2.3).
-    # Pull Requests - Returns a string combining the PR number and merge state, 
+    # Pull Requests - Returns a string combining the PR number and merge state,
     #                 such as 26/merge instead of the actual branch name
     #
     # Note, ncipollo/release-action requires a tag
     - name: For Distribution Release Artifacts of matid-${{ matrix.matid }}-comskip-${{ matrix.compilerEnv == 'notset' && 'native'  || matrix.compilerEnv }}-arch-${{ ( matrix.Architecture == 'notset' || matrix.Architecture == 'x64' ) && 'x64' || 'x86' }}-${{ github.ref_type }}-${{ github.ref_name }}-${{ matrix.provider }}
       # POSSIBLE FUTURE -- use the "gh" command explicitly in the build.yml file
       # See https://github.com/BtbN/FFmpeg-Builds/blob/master/.github/workflows/build.yml#L328C11-L328C27
-      #   gh release create 
+      #   gh release create
       # See
       #   Allowing GitHub Actions to Write to Repos
       #   Anas Dev Scribbles
@@ -1340,11 +1392,11 @@ jobs:
       #   https://www.youtube.com/watch?v=5SlMS9A41II
       #
       # I do not want to Release on a tag name SKIP
-      if: >- 
-        ${{ env.SKIP != 'true' && 
-        github.ref_type == 'tag' && 
-        ! startsWith(github.ref_name, 'SKIP') && 
-        ( env.compilerClass == 'MSYS2' ||  env.compilerClass == 'cygwin' ) 
+      if: >-
+        ${{ env.SKIP != 'true' &&
+        github.ref_type == 'tag' &&
+        ! startsWith(github.ref_name, 'SKIP') &&
+        ( env.compilerClass == 'MSYS2' ||  env.compilerClass == 'cygwin' )
         }}
       uses: ncipollo/release-action@v1
       with:
