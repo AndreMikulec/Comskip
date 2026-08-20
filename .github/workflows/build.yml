@@ -84,8 +84,14 @@ jobs:
           #
           # ComskipSRCversion: a140b6ac8bc8f596729e9052819affc779c3b377
 
-          # Explanation of "specific" matrix items -"Architecture" and "shell"-default
         - matid: '01'
+          os: ubuntu-latest
+          platform: linux
+          ExtraJobTitleInfo: linux ubuntu
+          GithubActionsIgnoreFail: false
+
+          # Explanation of "specific" matrix items -"Architecture" and "shell"-default
+        - matid: '02'
           # Architecture: x64 - currently, only used by cygwin (default - Architecture: x64 )
           os: windows-2025-vs2026
           platform: windows-cygwin
@@ -94,7 +100,7 @@ jobs:
           provider: repository
           GithubActionsIgnoreFail: false
 
-        - matid: '02'
+        - matid: '03'
           os: windows-2025-vs2026
           platform: windows-mingw
           compilerEnv: UCRT64
@@ -104,7 +110,7 @@ jobs:
 
         # Explanation of "common" Matrix items - "platorm", "provider", "ExtraJobTitleInfo", 
           # "GithubActionsIgnoreFail", and "SKIPImmune"
-        - matid: '03'
+        - matid: '04'
           os: windows-2025-vs2026
           # Currently, "platform" is only used in the non-MSYS2 and non-cygwin builds
           platform: windows-mingw
@@ -122,7 +128,7 @@ jobs:
           # SKIP tag is pushed, run JUST THIS only matrix item "SKIPImmune"
           SKIPImmune: true
 
-        - matid: '04'
+        - matid: '05'
           os: windows-2025-vs2026
           platform: windows-mingw
           compilerEnv: UCRT64
@@ -133,7 +139,7 @@ jobs:
           ExtraJobTitleInfo: ffmpeg-n9.0-latest
           GithubActionsIgnoreFail: false
 
-        - matid: '05'
+        - matid: '06'
           os: windows-2025-vs2026
           platform: windows-mingw
           compilerEnv: UCRT64
@@ -145,7 +151,7 @@ jobs:
           ExtraJobTitleInfo: ffmpeg-n8.1-latest
           GithubActionsIgnoreFail: false
 
-        - matid: '06'
+        - matid: '07'
           os: windows-2025-vs2026
           platform: windows-mingw
           compilerEnv: UCRT64
@@ -156,7 +162,7 @@ jobs:
           ExtraJobTitleInfo: ffmpeg-n6.1.2-192 the Last
           GithubActionsIgnoreFail: false
 
-        - matid: '07'
+        - matid: '08'
           os: windows-2025-vs2026
           platform: windows-mingw
           compilerEnv: UCRT64
@@ -209,27 +215,21 @@ jobs:
           ExtraJobTitleInfo: macos ffmpeg8
           GithubActionsIgnoreFail: false
 
-       - matid: '11'
+        - matid: '11'
           os: macos-latest
           platform: macos
           ffmpeg_version: ffmpeg7
           ExtraJobTitleInfo: macos ffmpeg7
           GithubActionsIgnoreFail: false
-
-        - matid: '02'
-          os: ubuntu-latest
-          platform: linux
-          ExtraJobTitleInfo: linux ubuntu
-          GithubActionsIgnoreFail: false
  
-         - matid: '13'
+        - matid: '12'
           os: macos-latest
           platform: macos
           ffmpeg_version: ffmpeg6
           ExtraJobTitleInfo: macos ffmpeg6
           GithubActionsIgnoreFail: false
  
-        - matid: '14'
+        - matid: '13'
           os: macos-latest
           platform: macos
           ffmpeg_version: ffmpeg5
@@ -898,7 +898,7 @@ jobs:
         echo "BEGIN Pre Build - Exchange to a newer ArgTable config.guess for cygwin"
         set -x -v -e
         export PATH=/usr/local/bin:/usr/bin:/bin:/usr/sbin:/sbin
-        if [ ! -f config.guess ]; then cp timestamp_2025-07-10_config.guess config.guess ; fi
+        if [ ! -f config.guess ]; then cp timestamp_2026-05-17_config.guess.guess config.guess ; fi
         echo "END Pre Build - Exchange to a newer ArgTable config.guess for cygwin"
 
     ####
@@ -948,7 +948,7 @@ jobs:
         echo "BEGIN Pre Build - Exchange to a newer ArgTable config.sub for cygwin"
         set -x -v -e
         export PATH=/usr/local/bin:/usr/bin:/bin:/usr/sbin:/sbin
-        if [ ! -f config.sub ]; then cp timestamp_2025-07-10_config.sub config.sub ; fi
+        if [ ! -f config.sub ]; then cp timestamp_2026-05-17_config.sub config.sub ; fi
         echo "END Pre Build - Exchange to a newer ArgTable config.sub for cygwin"
 
     ####
