@@ -43,6 +43,7 @@ build_script:
 # - C:\msys64\usr\bin\bash -lc "cd $(cygpath \"%APPVEYOR_BUILD_FOLDER%\") && ./autogen.sh && argtable2_CFLAGS='-Iargtable2-13/src' argtable2_LIBS='-Largtable2-13/src/.libs -largtable2' ffmpeg_CFLAGS='-Iffmpeg-5.0.1-full_build-shared/include' ffmpeg_LIBS='-Lffmpeg-5.0.1-full_build-shared/lib -lavutil -lavformat -lavcodec -lswscale' ./configure && make"
 
   - sh: |
+      set -x -v -e
       cd "$(cygpath "${APPVEYOR_BUILD_FOLDER}")"
       tar xf argtable2-13.tar.gz
       cd argtable2-13
@@ -58,6 +59,7 @@ before_test:
 # - C:\msys64\usr\bin\bash -lc "cd $(cygpath \"%APPVEYOR_BUILD_FOLDER%\") && export PATH=$(pwd)/ffmpeg-5.0.1-full_build-shared/bin/:$PATH && ls -alh comskip.exe && ldd comskip.exe"
 
   - sh: |
+      set -x -v -e
       cd "$(cygpath "${APPVEYOR_BUILD_FOLDER}")"
       export PATH=$(pwd)/ffmpeg-5.0.1-full_build-shared/bin/:${PATH}
       ls -alh comskip.exe
