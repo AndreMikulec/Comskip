@@ -949,7 +949,7 @@ jobs:
           ffmpeg_CFLAGS='-Iwin-gpl-shared/include' ffmpeg_LIBS='-Lwin-gpl-shared/lib -lavutil -lavformat -lavcodec -lswscale -lswresample' ./configure CFLAGS="-I${MINGW_PREFIX}/include" LDFLAGS="-L${MINGW_PREFIX}/lib"
         elif [ "${OperatingSystem}" == "Cygwin" ]
         then
-          ./configure CFLAGS="-I/usr/local/include" LDFLAGS="-L/usr/local/lib"
+          ./configure CPPFLAGS="-I/usr/local/include" argtable3_CFLAGS="-I/usr/local/include" CFLAGS="-I/usr/local/include" LDFLAGS="-L/usr/local/lib  -largtable3" argtable3_LIBS="-L/usr/local/lib  -largtable3"
         else
           ./configure
         fi
