@@ -442,6 +442,10 @@ jobs:
     # -- Installing: C:/Program Files (x86)/argtable3/lib/pkgconfig/argtable3.pc
     # -- Installing: C:/Program Files (x86)/argtable3/lib/libargtable3.a
     # -- Installing: C:/Program Files (x86)/argtable3/include/argtable3.h
+    # Mingw - CMAKE_INSTALL_PREFIX="$MINGW_PREFIX"
+    # -- Installing: D:/a/_temp/msys64/ucrt64/lib/pkgconfig/argtable3.pc
+    # -- Installing: D:/a/_temp/msys64/ucrt64/lib/libargtable3.a
+    # -- Installing: D:/a/_temp/msys64/ucrt64/include/argtable3.h
     # Cygwin (cmake install location default)
     # -- Installing: /usr/local/lib/pkgconfig/argtable3.pc
     # -- Installing: /usr/local/lib/libargtable3.a
@@ -466,11 +470,11 @@ jobs:
 
         if [ "${OperatingSystem}" == "Cygwin" ]
         then
-          cmake -B . -G "Unix Makefiles" -S .. -DCMAKE_BUILD_TYPE=Release                                                 -DCMAKE_C_COMPILER_TARGET=x86_64-pc-cygwin
+          cmake -B . -G "Ninja" -S .. -DCMAKE_BUILD_TYPE=Release                                                 -DCMAKE_C_COMPILER_TARGET=x86_64-pc-cygwin
         fi
         if [ "${OperatingSystem}" == "Mingw" ]
         then
-          cmake -B . -G "Unix Makefiles" .-S .. -DCMAKE_BUILD_TYPE=Release --fresh -DCMAKE_INSTALL_PREFIX="$MINGW_PREFIX" -DCMAKE_C_COMPILER_TARGET=${MINGW_PACKAGE_PREFIX}
+          cmake -B . -G "Ninja" -S .. -DCMAKE_BUILD_TYPE=Release --fresh -DCMAKE_INSTALL_PREFIX="$MINGW_PREFIX" -DCMAKE_C_COMPILER_TARGET=${MINGW_PACKAGE_PREFIX}
         fi
 
         cmake --build .
@@ -913,6 +917,7 @@ jobs:
           # make
           #
 
+        # NOT SURE IF THIS IS ACTUALLY USED ?!?
         if [ "${OperatingSystem}" == "Cygwin" ]
         then
           if [ "${PKG_CONFIG_PATH}" == "" ]; then export PKG_CONFIG_PATH=/usr/local/lib/pkgconfig ; fi
@@ -941,7 +946,10 @@ jobs:
         if [ "${OperatingSystem}" == "Mingw" ] && [ -d "win-gpl-shared" ]
         then
           # -lswresample SEEMS now required
-          ffmpeg_CFLAGS='-Iwin-gpl-shared/include' ffmpeg_LIBS='-Lwin-gpl-shared/lib -lavutil -lavformat -lavcodec -lswscale -lswresample' ./configure
+          ffmpeg_CFLAGS='-Iwin-gpl-shared/include' ffmpeg_LIBS='-Lwin-gpl-shared/lib -lavutil -lavformat -lavcodec -lswscale -lswresample' ./configure CFLAGS="-I${MINGW_PREFIX}/include" LDFLAGS="-L${MINGW_PREFIX}/lib"
+        elif [ "${OperatingSystem}" == "Cygwin" ]
+        then
+          ./configure CFLAGS="-I/usr/local/include" LDFLAGS="-L/usr/local/lib"
         else
           ./configure
         fi
