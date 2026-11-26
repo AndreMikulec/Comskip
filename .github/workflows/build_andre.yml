@@ -70,17 +70,6 @@ jobs:
         ref: '${{ env.ComskipSRCversion != ''notset'' && env.ComskipSRCversion || '''' }}'
 
 
-    # released this Jun 22, 2025
-    # https://github.com/argtable/argtable3/releases/tag/v3.3.1
-    - name: Checkout Argtable3
-      # Currently restricted to Mingw and Cygwin
-      if: ${{ env.compilerClass == 'Mingw' || env.compilerClass == 'Cygwin' }}
-      uses: actions/checkout@v7
-      with:
-        repository: argtable/argtable3
-        ref: 'v3.3.1'
-        path: argtable3_source
-
     - name: Windows Machine Stats for $${{ matrix.os }}
       if: ${{ matrix.os == 'windows-2025-vs2026' }}
       shell: cmd
@@ -393,6 +382,18 @@ jobs:
         echo "OperatingSystem=${OperatingSystem}" >> ${GITHUB_ENV}
 
         echo "OperatingSystem: ${OperatingSystem}"
+
+
+    # released this Jun 22, 2025
+    # https://github.com/argtable/argtable3/releases/tag/v3.3.1
+    - name: Checkout Argtable3
+      # Currently restricted to Mingw and Cygwin
+      if: ${{ env.compilerClass == 'Mingw' || env.compilerClass == 'Cygwin' }}
+      uses: actions/checkout@v7
+      with:
+        repository: argtable/argtable3
+        ref: 'v3.3.1'
+        path: argtable3_source
 
 
     # Argtable 3.3.0 documentation
