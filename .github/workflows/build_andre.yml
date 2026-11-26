@@ -417,6 +417,8 @@ jobs:
     # https://cmake.org/cmake/help/v4.5/manual/cmake.1.html
     # -B <path-to-build>
     # Path to directory which CMake will use as the root of build directory.
+    # -S <path-to-source>
+    # Path to root directory of the CMake project to build.
     # https://cmake.org/cmake/help/v4.5/manual/cmake.1.html
     # Build and Run
     # https://cmake.org/cmake/help/v4.5/guide/tutorial/Installation%20Commands%20and%20Concepts.html#id11
@@ -428,10 +430,12 @@ jobs:
     # [SOLVED] Force cmake to use gcc/mingw makefiles on Windows runner #7998
     # JUL 28 2023
     # https://github.com/actions/runner-images/discussions/7998
-    # Ninja (install ${{matrix.prefix}}-ninja; the build uses the command ninja), 
-    # MinGW Makefiles (install ${{matrix.prefix}}-make, the build uses mingw32-make) 
-    # or 
-    # MSYS Makefiles (install make, and the build uses the plain make command).
+    # X Ninja (install ${{matrix.prefix}}-ninja; the build uses the command ninja), 
+    # X MinGW Makefiles (install ${{matrix.prefix}}-make, the build uses mingw32-make) 
+    # X or 
+    # X MSYS Makefiles (install make, and the build uses the plain make command).
+    # Unix Makefiles               = Generates standard UNIX makefiles.
+    # Ninja                        = Generates build.ninja files.
     # JUL 2021 SEEN NOV 2026
     # https://github.com/msys2/msys2.github.io/issues/144
     # Mingw (cmake install location default)
@@ -458,16 +462,17 @@ jobs:
 
         pushd argtable3_source
         mkdir build
-
-        if [ "${OperatingSystem}" == "Msys" ]
-        then
-          # fresh - force a clean configuration
-          cmake -B build --fresh -DCMAKE_INSTALL_PREFIX="$MINGW_PREFIX"
-        fi
-
         pushd build
 
-        cmake -G MSYS Makefiles -DCMAKE_BUILD_TYPE=Release
+        if [ "${OperatingSystem}" == "Cygwin" ]
+        then
+          cmake -B . -G "Unix Makefiles" -S .. -DCMAKE_BUILD_TYPE=Release
+        fi
+        if [ "${OperatingSystem}" == "Mingw" ]
+        then
+          cmake -B . -G "Unix Makefiles" .-S .. -DCMAKE_BUILD_TYPE=Release --fresh -DCMAKE_INSTALL_PREFIX="$MINGW_PREFIX"
+        fi
+
         cmake --build .
         cmake --install .
 
