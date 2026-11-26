@@ -262,7 +262,11 @@ jobs:
         system_profiler SPSoftwareDataType SPHardwareDataType
         brew install autoconf automake libtool pkgconf argtable ffmpeg@${{ env.ffmpeg_version }} sdl2
 
-
+    # mingw-w64-ucrt-x86_64-ninja
+    # Version:
+    # 1.13.2-1
+    # https://packages.msys2.org/packages/mingw-w64-ucrt-x86_64-ninja
+    #
     # mingw-w64-ucrt-x86_64-cmake (NOV 2026)
     # Version:
     # 4.5.1-1
@@ -284,6 +288,7 @@ jobs:
           ${{ env.MINGW_PACKAGE_PREFIX }}-autotools
           ${{ env.MINGW_PACKAGE_PREFIX }}-libtool
           ${{ env.MINGW_PACKAGE_PREFIX }}-pkg-config
+          ${{ env.MINGW_PACKAGE_PREFIX }}-ninja
           ${{ env.MINGW_PACKAGE_PREFIX }}-cmake
           ${{ env.MINGW_PACKAGE_PREFIX }}-SDL2
           ${{ env.MINGW_PACKAGE_PREFIX }}-SDL2_image
@@ -296,6 +301,10 @@ jobs:
 
 
     - name: Set up for Cygwin
+    
+      # Package: ninja (NOV 2026)
+      # 1.13.2-1
+      # https://www.cygwin.com/packages/summary/ninja.html
       #
       # Package: cmake (NOV 2026)
       # 4.4.5-1
@@ -327,6 +336,7 @@ jobs:
           tar
           ffmpeg
           curl
+          ninja
           cmake
           automake
           libavformat62
@@ -407,6 +417,14 @@ jobs:
     # https://cmake.org/cmake/help/v4.5/manual/cmake.1.html
     # Build and Run
     # https://cmake.org/cmake/help/v4.5/guide/tutorial/Installation%20Commands%20and%20Concepts.html#id11
+    # cmake -G Ninja <path-to-source> -DCMAKE_BUILD_TYPE=Release
+    # cmake --build .
+    # https://www.msys2.org/docs/cmake/
+    # Example
+    # https://github.com/msys2/setup-msys2/blob/main/examples/cmake.yml
+    # [SOLVED] Force cmake to use gcc/mingw makefiles on Windows runner #7998
+    # JUL 28 2023
+    # https://github.com/actions/runner-images/discussions/7998
     - name: Build and Install Argtable3
       # Currently restricted to Mingw and Cygwin
       if: ${{ env.compilerClass == 'Mingw' || env.compilerClass == 'Cygwin' }}
@@ -424,7 +442,7 @@ jobs:
         mkdir build
         pushd build
 
-        cmake -DCMAKE_BUILD_TYPE=Release ..
+        cmake -G Ninja .. --fresh -DCMAKE_BUILD_TYPE=Release 
         cmake --build .
         cmake --install .
 
