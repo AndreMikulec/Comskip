@@ -466,11 +466,11 @@ jobs:
 
         if [ "${OperatingSystem}" == "Cygwin" ]
         then
-          cmake -B . -G "Unix Makefiles" -S .. -DCMAKE_BUILD_TYPE=Release
+          cmake -B . -G "Unix Makefiles" -S .. -DCMAKE_BUILD_TYPE=Release                                                 -DCMAKE_C_COMPILER_TARGET=x86_64-pc-cygwin
         fi
         if [ "${OperatingSystem}" == "Mingw" ]
         then
-          cmake -B . -G "Unix Makefiles" .-S .. -DCMAKE_BUILD_TYPE=Release --fresh -DCMAKE_INSTALL_PREFIX="$MINGW_PREFIX"
+          cmake -B . -G "Unix Makefiles" .-S .. -DCMAKE_BUILD_TYPE=Release --fresh -DCMAKE_INSTALL_PREFIX="$MINGW_PREFIX" -DCMAKE_C_COMPILER_TARGET=${MINGW_PACKAGE_PREFIX}
         fi
 
         cmake --build .
