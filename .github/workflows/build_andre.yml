@@ -947,10 +947,9 @@ jobs:
         if [ "${OperatingSystem}" == "Mingw" ] && [ -d "win-gpl-shared" ]
         then
           # -lswresample SEEMS now required
-          ffmpeg_CFLAGS='-Iwin-gpl-shared/include' ffmpeg_LIBS='-Lwin-gpl-shared/lib -lavutil -lavformat -lavcodec -lswscale -lswresample' ./configure CFLAGS="-I${MINGW_PREFIX}/include" LDFLAGS="-L${MINGW_PREFIX}/lib"
+          ffmpeg_CFLAGS='-Iwin-gpl-shared/include' ffmpeg_LIBS='-Lwin-gpl-shared/lib -lavutil -lavformat -lavcodec -lswscale -lswresample' ./configure CFLAGS="-I${MINGW_PREFIX}/include" LDFLAGS="-L${MINGW_PREFIX}/lib -largtable3"
         elif [ "${OperatingSystem}" == "Cygwin" ]
         then
-          # ./configure CPPFLAGS="-I/usr/local/include" argtable3_CFLAGS="-I/usr/local/include" CFLAGS="-I/usr/local/include" LDFLAGS="-L/usr/local/lib  -largtable3" argtable3_LIBS="-L/usr/local/lib  -largtable3"
           ./configure argtable3_CFLAGS="-I/usr/local/include" argtable3_LIBS="-L/usr/local/lib  -largtable3"
         else
           ./configure
