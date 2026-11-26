@@ -70,6 +70,17 @@ jobs:
         ref: '${{ env.ComskipSRCversion != ''notset'' && env.ComskipSRCversion || '''' }}'
 
 
+    # released this Jun 22, 2025
+    # https://github.com/argtable/argtable3/releases/tag/v3.3.1
+    - name: Checkout Argtable3
+      # Currently restricted to Mingw and Cygwin
+      if: ${{ env.compilerClass == 'Mingw' || env.compilerClass == 'Cygwin' }}
+      uses: actions/checkout@v7
+      with:
+        repository: argtable/argtable3
+        ref: 'v3.3.1'
+        path: argtable3_source
+
     - name: Windows Machine Stats for $${{ matrix.os }}
       if: ${{ matrix.os == 'windows-2025-vs2026' }}
       shell: cmd
@@ -263,6 +274,11 @@ jobs:
         brew install autoconf automake libtool pkgconf argtable ffmpeg@${{ env.ffmpeg_version }} sdl2
 
 
+    # mingw-w64-ucrt-x86_64-cmake (NOV 2026)
+    # Version:
+    # 4.5.1-1
+    # https://packages.msys2.org/packages/mingw-w64-ucrt-x86_64-cmake
+    #
     #  Add the Mingw package "zip" to create a distribution release
     #  Add the Mingw package "unzip" to extract shared FFmpeg files from github.com/BtbN
     - name: Setup for Mingw
@@ -279,7 +295,7 @@ jobs:
           ${{ env.MINGW_PACKAGE_PREFIX }}-autotools
           ${{ env.MINGW_PACKAGE_PREFIX }}-libtool
           ${{ env.MINGW_PACKAGE_PREFIX }}-pkg-config
-          ${{ env.MINGW_PACKAGE_PREFIX }}-argtable
+          ${{ env.MINGW_PACKAGE_PREFIX }}-cmake
           ${{ env.MINGW_PACKAGE_PREFIX }}-SDL2
           ${{ env.MINGW_PACKAGE_PREFIX }}-SDL2_image
           ${{ env.MINGW_PACKAGE_PREFIX }}-SDL2_mixer
@@ -291,6 +307,11 @@ jobs:
 
 
     - name: Set up for Cygwin
+      #
+      # Package: cmake (NOV 2026)
+      # 4.4.5-1
+      # https://www.cygwin.com/packages/summary/cmake.html
+      #
       # In Mingw, package autotools is the Cygwin package autoconf.
       # In Mingw, package gcc is the Cygwin package gcc-core.
       # In Cygwin, no package "argtable2-13" or similar exists
@@ -317,6 +338,7 @@ jobs:
           tar
           ffmpeg
           curl
+          cmake
           automake
           libavformat62
           libavformat-devel
@@ -371,6 +393,42 @@ jobs:
         echo "OperatingSystem=${OperatingSystem}" >> ${GITHUB_ENV}
 
         echo "OperatingSystem: ${OperatingSystem}"
+
+
+    # Argtable 3.3.0 documentation
+    # Installation
+    # Build from Release Archives or Source
+    # If you use GCC (Linux, MacOSX, MinGW, Cygwin)
+    # https://www.argtable.org/docs/arg_installation.html
+    # open-source ANSI C library that simplifies parsing GNU-style command-line options
+    # https://github.com/argtable/argtable3
+    # cmake(1)
+    # https://cmake.org/cmake/help/v4.5/manual/cmake.1.html
+    # Build and Run
+    # https://cmake.org/cmake/help/v4.5/guide/tutorial/Installation%20Commands%20and%20Concepts.html#id11
+    - name: Build and Install Argtable3
+      # Currently restricted to Mingw and Cygwin
+      if: ${{ env.compilerClass == 'Mingw' || env.compilerClass == 'Cygwin' }}
+      env:
+        # Cygwin OS variables
+        SHELLOPTS: igncr
+        CHERE_INVOKING: 1
+        # Mingw OS variable
+        msystem: ${{ env.compilerEnv }}
+        MSYS2_LOCATION: ${{ steps.mingw_install.outputs.msys2-location }}
+      run: |
+        echo "Build and Install Argtable3"
+        set -x -v -e
+        pushd argtable3_source
+        mkdir build
+        pushd build
+
+        cmake -DCMAKE_BUILD_TYPE=Release ..
+        cmake --build .
+        cmake --install .
+
+        popd # from build
+        popd # from argtable3_source
 
 
     - name: Download, Quick Check, save version FFMPEGVERSION and FFMPEGSHORTVERSION of, ffmpeg from the ${{ matrix.provider_altarchive_url }}
@@ -524,235 +582,235 @@ jobs:
         echo "END   Download, Quick Check, save version FFMPEGVERSION and FFMPEGSHORTVERSION of, ffmpeg from the ${{ matrix.provider_altarchive_url }}"
 
 
-    - name: Pre Build - Cache ArgTable Source Code from Sourceforge for Cygwin
-      id: cacheArgTableSourceCode
-      if: ${{ env.compilerClass == 'Cygwin' }}
-      uses: actions/cache@v6
-      with:
-        path: argtable2-13.tar.gz
-        key:  argtable2-13.tar.gz
-      env:
-        SEGMENT_DOWNLOAD_TIMEOUT_MINS: 1
+#   - name: Pre Build - Cache ArgTable Source Code from Sourceforge for Cygwin
+#     id: cacheArgTableSourceCode
+#     if: ${{ env.compilerClass == 'Cygwin' }}
+#     uses: actions/cache@v6
+#     with:
+#       path: argtable2-13.tar.gz
+#       key:  argtable2-13.tar.gz
+#     env:
+#       SEGMENT_DOWNLOAD_TIMEOUT_MINS: 1
 
 
-      # Argtable is an ANSI C command line parser.
-      # https://argtable.sourceforge.io/
-      # Dockerfile (from the Github Comskip README.md file)
-      #   wget http://prdownloads.sourceforge.net/argtable/argtable2-13.tar.gz
-      #
-    - name: Pre Build - Download ArgTable Source Code from Sourceforge for Cygwin
-      id: downloadArgTableSourceCode
-      if: ${{ env.compilerClass == 'Cygwin' && steps.cacheArgTableSourceCode.outputs.cache-hit != 'true' }}
-      uses: suisei-cn/actions-download-file@v1.6.1
-      with:
-        retry-times: 1
-        url: http://prdownloads.sourceforge.net/argtable/argtable2-13.tar.gz
+#     # Argtable is an ANSI C command line parser.
+#     # https://argtable.sourceforge.io/
+#     # Dockerfile (from the Github Comskip README.md file)
+#     #   wget http://prdownloads.sourceforge.net/argtable/argtable2-13.tar.gz
+#     #
+#   - name: Pre Build - Download ArgTable Source Code from Sourceforge for Cygwin
+#     id: downloadArgTableSourceCode
+#     if: ${{ env.compilerClass == 'Cygwin' && steps.cacheArgTableSourceCode.outputs.cache-hit != 'true' }}
+#     uses: suisei-cn/actions-download-file@v1.6.1
+#     with:
+#       retry-times: 1
+#       url: http://prdownloads.sourceforge.net/argtable/argtable2-13.tar.gz
 
 
-    - name: Pre Build - Cache ArgTable config.guess for Cygwin
-      id: cacheConfigGuess
-      if: ${{ env.compilerClass == 'Cygwin' }}
-      uses: actions/cache@v6
-      with:
-        path: config.guess
-        key:  config.guess
-      env:
-        SEGMENT_DOWNLOAD_TIMEOUT_MINS: 1
+#   - name: Pre Build - Cache ArgTable config.guess for Cygwin
+#     id: cacheConfigGuess
+#     if: ${{ env.compilerClass == 'Cygwin' }}
+#     uses: actions/cache@v6
+#     with:
+#       path: config.guess
+#       key:  config.guess
+#     env:
+#       SEGMENT_DOWNLOAD_TIMEOUT_MINS: 1
 
 
-    - name: Pre Build - Download ArgTable config.guess for Cygwin
-      id: downloadConfigGuess
-      continue-on-error: true
-      if: ${{ env.compilerClass == 'Cygwin' && steps.cacheConfigGuess.outputs.cache-hit != 'true' }}
-      uses: suisei-cn/actions-download-file@v1.6.1
-      with:
-        retry-times: 1
-        url: https://cgit.git.savannah.gnu.org/cgit/config.git/plain/config.guess
+#   - name: Pre Build - Download ArgTable config.guess for Cygwin
+#     id: downloadConfigGuess
+#     continue-on-error: true
+#     if: ${{ env.compilerClass == 'Cygwin' && steps.cacheConfigGuess.outputs.cache-hit != 'true' }}
+#     uses: suisei-cn/actions-download-file@v1.6.1
+#     with:
+#       retry-times: 1
+#       url: https://cgit.git.savannah.gnu.org/cgit/config.git/plain/config.guess
 
 
-    - name: Pre Build - Exchange to a newer ArgTable config.guess for Cygwin
-      id: exchangeNewerConfigGuessforCygwin
-      if: ${{ env.compilerClass == 'Cygwin' && steps.downloadConfigGuess.outcome == 'failure' }}
-      env:
-        # Cygwin OS variables
-        SHELLOPTS: igncr
-        CHERE_INVOKING: 1
-        # Mingw OS variable
-        msystem: ${{ env.compilerEnv }}
-      run: |
-        echo "BEGIN Pre Build - Exchange to a newer ArgTable config.guess for Cygwin"
-        set -x -v -e
-        export PATH=/usr/local/bin:/usr/bin:/bin:/usr/sbin:/sbin
-        if [ ! -f "config.guess" ]; then mv timestamp_2026-05-17_config.guess config.guess ; fi
-        echo "END Pre Build - Exchange to a newer ArgTable config.guess for Cygwin"
+#   - name: Pre Build - Exchange to a newer ArgTable config.guess for Cygwin
+#     id: exchangeNewerConfigGuessforCygwin
+#     if: ${{ env.compilerClass == 'Cygwin' && steps.downloadConfigGuess.outcome == 'failure' }}
+#     env:
+#       # Cygwin OS variables
+#       SHELLOPTS: igncr
+#       CHERE_INVOKING: 1
+#       # Mingw OS variable
+#       msystem: ${{ env.compilerEnv }}
+#     run: |
+#       echo "BEGIN Pre Build - Exchange to a newer ArgTable config.guess for Cygwin"
+#       set -x -v -e
+#       export PATH=/usr/local/bin:/usr/bin:/bin:/usr/sbin:/sbin
+#       if [ ! -f "config.guess" ]; then mv timestamp_2026-05-17_config.guess config.guess ; fi
+#       echo "END Pre Build - Exchange to a newer ArgTable config.guess for Cygwin"
 
 
-    - name: Pre Build - Cache ArgTable config.sub for Cygwin
-      id: cacheConfigSub
-      if: ${{ env.compilerClass == 'Cygwin' }}
-      uses: actions/cache@v6
-      with:
-        path: config.sub
-        key:  config.sub
-      env:
-        SEGMENT_DOWNLOAD_TIMEOUT_MINS: 1
+#   - name: Pre Build - Cache ArgTable config.sub for Cygwin
+#     id: cacheConfigSub
+#     if: ${{ env.compilerClass == 'Cygwin' }}
+#     uses: actions/cache@v6
+#     with:
+#       path: config.sub
+#       key:  config.sub
+#     env:
+#       SEGMENT_DOWNLOAD_TIMEOUT_MINS: 1
 
 
-    - name: Pre Build - Download ArgTable config.sub for Cygwin
-      id: downloadConfigSub
-      continue-on-error: true
-      if: ${{ env.compilerClass == 'Cygwin' && steps.cacheConfigSub.outputs.cache-hit != 'true' }}
-      uses: suisei-cn/actions-download-file@v1.6.1
-      with:
-        retry-times: 1
-        url: https://cgit.git.savannah.gnu.org/cgit/config.git/plain/config.sub
+#   - name: Pre Build - Download ArgTable config.sub for Cygwin
+#     id: downloadConfigSub
+#     continue-on-error: true
+#     if: ${{ env.compilerClass == 'Cygwin' && steps.cacheConfigSub.outputs.cache-hit != 'true' }}
+#     uses: suisei-cn/actions-download-file@v1.6.1
+#     with:
+#       retry-times: 1
+#       url: https://cgit.git.savannah.gnu.org/cgit/config.git/plain/config.sub
 
 
-    - name: Pre Build - Exchange to a newer ArgTable config.sub for Cygwin
-      id: exchangeNewerConfigSubforCygwin
-      if: ${{ env.compilerClass == 'Cygwin' && steps.downloadConfigSub.outcome == 'failure' }}
-      env:
-        # Cygwin OS variables
-        SHELLOPTS: igncr
-        CHERE_INVOKING: 1
-        # Mingw OS variable
-        msystem: ${{ env.compilerEnv }}
-      run: |
-        echo "BEGIN Pre Build - Exchange to a newer ArgTable config.sub for Cygwin"
-        set -x -v -e
-        export PATH=/usr/local/bin:/usr/bin:/bin:/usr/sbin:/sbin
-        if [ ! -f "config.sub" ]; then mv timestamp_2026-05-17_config.sub config.sub ; fi
-        echo "END Pre Build - Exchange to a newer ArgTable config.sub for Cygwin"
+#   - name: Pre Build - Exchange to a newer ArgTable config.sub for Cygwin
+#     id: exchangeNewerConfigSubforCygwin
+#     if: ${{ env.compilerClass == 'Cygwin' && steps.downloadConfigSub.outcome == 'failure' }}
+#     env:
+#       # Cygwin OS variables
+#       SHELLOPTS: igncr
+#       CHERE_INVOKING: 1
+#       # Mingw OS variable
+#       msystem: ${{ env.compilerEnv }}
+#     run: |
+#       echo "BEGIN Pre Build - Exchange to a newer ArgTable config.sub for Cygwin"
+#       set -x -v -e
+#       export PATH=/usr/local/bin:/usr/bin:/bin:/usr/sbin:/sbin
+#       if [ ! -f "config.sub" ]; then mv timestamp_2026-05-17_config.sub config.sub ; fi
+#       echo "END Pre Build - Exchange to a newer ArgTable config.sub for Cygwin"
 
 
-    - name: Configure, Build, and Install argtable2-13 for Cygwin
-      if: ${{ env.compilerClass == 'Cygwin' }}
-      env:
-        # Cygwin OS variables
-        SHELLOPTS: igncr
-        CHERE_INVOKING: 1
-        # Mingw OS variable
-        msystem: ${{ env.compilerEnv }}
-        MSYS2_LOCATION: ${{ steps.mingw_install.outputs.msys2-location }}
-      run: |
-        echo "BEGIN Configure, Build, and Install argtable2-13 for Cygwin"
-        set -x -v -e
-        # because I set CHERE_INVOKING to be 1
-        export PATH=/usr/local/bin:/usr/bin:/bin:/usr/sbin:/sbin
-        echo "uname -a"
-        uname -a
-
-        # Argtable is an ANSI C command line parser.
-        # https://argtable.sourceforge.io/
-        #
-        # Dockerfile in
-        #   wget http://prdownloads.sourceforge.net/argtable/argtable2-13.tar.gz
-        #   tar xzf argtable2-13.tar.gz
-        #   cd argtable2-13/ && ./configure && make && make install
-        #
-        # https://cgit.git.savannah.gnu.org/cgit/config.git/
-        # https://www.gnu.org/software/gettext/manual/html_node/config_002eguess.html
-        # https://github.com/jemalloc/jemalloc/issues/2814
-        # https://man7.org/linux/man-pages/man1/curl.1.html
-        tar xzf argtable2-13.tar.gz
-        pushd argtable2-13
-          echo "New current directory: $(pwd)"
-          # replace the old files
-          # curl --verbose -L -O https://git.savannah.gnu.org/cgit/config.git/plain/config.guess
-          rm config.guess
-          cp ../config.guess .
-          echo "Age of the file config.guess"
-          ls -alrt config.guess
-          # curl --verbose -L -O https://git.savannah.gnu.org/cgit/config.git/plain/config.sub
-          rm config.sub
-          cp ../config.sub .
-          echo "Age of the file config.sub"
-          ls -alrt config.sub
-          ./config.guess --version
-          ./config.sub   --version
-          set +x +v +e
-          #
-          # SEEN AUG 20 2026
-          # From gcc 13 to gcc 14, how have implicit function declaration handline changed ?
-          # ...
-          # Gemini AI answer ...
-          # In GCC 14, implicit function declarations are treated as a hard compile-time error
-          # (-Werror=implicit-function-declaration) instead of just generating a warning as they did
-          # in GCC 13 and prior versions.
-          #
-          #   arg_int.c:89:8: warning: implicit declaration of function 'toupper' [-Wimplicit-function-declaration]
-          #   arg_int.c:89:8: note: include '<ctype.h>' or provide a declaration of 'toupper
-          #
-          # Calling a function without a prior prototype or definition is no longer permitted by default.
-          #
-          # 13.4.0-1  x86_64  ...  2025-07-23 05:27
-          # 14.4.0-1  x86_64  ...  2026-07-01 18:52
-          # https://www.Cygwin.com/packages/summary/mingw64-i686-gcc-core.html
-          #
-          # solution 1 - patch (BETTER)
-          # https://github.com/msys2/MINGW-packages/blob/master/mingw-w64-argtable/001-missing-ctype.patch
-          # Add missing ctype.h and enable aarch64 builds
-          # https://github.com/msys2/MINGW-packages/commit/8d64ae169b4d04b551022916c3dafbc54da8a2ee
-          #
-          # solution 2 (TEMPORARY)
-          #
-          # What C flag is used to turn
-          # back the behavior "error: implicit declaration of function"
-          # back to "warning: implicit declaration of function" ?
-          #
-          # Gemini AI answer ...
-          # -Wno-error=implicit-function-declaration
-          #
-          # Therefore, now do ...
-          # from
-          # ./configure
-          # to
-          # CFLAGS="-Wno-error=implicit-function-declaration" ./configure
-          #
-          CFLAGS="-Wno-error=implicit-function-declaration" ./configure
-          set -x -v -e
-          # argtable2-13/INSTALL file of instructions
-          make
-          make install
-          popd # from argtable2-13
-        echo "New current directory: $(pwd)"
-        echo "END   Configure, Build, and Install argtable2-13 for Cygwin"
-
-
-    - name: Post Build - Exchange to an older ArgTable config.guess for Cygwin
-      id: exchangeOlderConfigGuessforCygwin
-      if: ${{ env.compilerClass == 'Cygwin' && steps.exchangeNewerConfigGuessforCygwin.outcome == 'success' }}
-      env:
-        # Cygwin OS variables
-        SHELLOPTS: igncr
-        CHERE_INVOKING: 1
-        # Mingw OS variable
-        msystem: ${{ env.compilerEnv }}
-      run: |
-        echo "BEGIN Post Build - Exchange to an older ArgTable config.guess for Cygwin"
-        set -x -v -e
-        export PATH=/usr/local/bin:/usr/bin:/bin:/usr/sbin:/sbin
-        echo "reverting to prevent CACHE-ING of config.guess"
-        if [ ! -f "config.guess" ]; then mv config.guess timestamp_2026-05-17_config.guess ; fi
-        echo "END   Post Build - Exchange to an older ArgTable config.guess for Cygwin"
+#   - name: Configure, Build, and Install argtable2-13 for Cygwin
+#     if: ${{ env.compilerClass == 'Cygwin' }}
+#     env:
+#       # Cygwin OS variables
+#       SHELLOPTS: igncr
+#       CHERE_INVOKING: 1
+#       # Mingw OS variable
+#       msystem: ${{ env.compilerEnv }}
+#       MSYS2_LOCATION: ${{ steps.mingw_install.outputs.msys2-location }}
+#     run: |
+#       echo "BEGIN Configure, Build, and Install argtable2-13 for Cygwin"
+#       set -x -v -e
+#       # because I set CHERE_INVOKING to be 1
+#       export PATH=/usr/local/bin:/usr/bin:/bin:/usr/sbin:/sbin
+#       echo "uname -a"
+#       uname -a
+#
+#       # Argtable is an ANSI C command line parser.
+#       # https://argtable.sourceforge.io/
+#       #
+#       # Dockerfile in
+#       #   wget http://prdownloads.sourceforge.net/argtable/argtable2-13.tar.gz
+#       #   tar xzf argtable2-13.tar.gz
+#       #   cd argtable2-13/ && ./configure && make && make install
+#       #
+#       # https://cgit.git.savannah.gnu.org/cgit/config.git/
+#       # https://www.gnu.org/software/gettext/manual/html_node/config_002eguess.html
+#       # https://github.com/jemalloc/jemalloc/issues/2814
+#       # https://man7.org/linux/man-pages/man1/curl.1.html
+#       tar xzf argtable2-13.tar.gz
+#       pushd argtable2-13
+#         echo "New current directory: $(pwd)"
+#         # replace the old files
+#         # curl --verbose -L -O https://git.savannah.gnu.org/cgit/config.git/plain/config.guess
+#         rm config.guess
+#         cp ../config.guess .
+#         echo "Age of the file config.guess"
+#         ls -alrt config.guess
+#         # curl --verbose -L -O https://git.savannah.gnu.org/cgit/config.git/plain/config.sub
+#         rm config.sub
+#         cp ../config.sub .
+#         echo "Age of the file config.sub"
+#         ls -alrt config.sub
+#         ./config.guess --version
+#         ./config.sub   --version
+#         set +x +v +e
+#         #
+#         # SEEN AUG 20 2026
+#         # From gcc 13 to gcc 14, how have implicit function declaration handline changed ?
+#         # ...
+#         # Gemini AI answer ...
+#         # In GCC 14, implicit function declarations are treated as a hard compile-time error
+#         # (-Werror=implicit-function-declaration) instead of just generating a warning as they did
+#         # in GCC 13 and prior versions.
+#         #
+#         #   arg_int.c:89:8: warning: implicit declaration of function 'toupper' [-Wimplicit-function-declaration]
+#         #   arg_int.c:89:8: note: include '<ctype.h>' or provide a declaration of 'toupper
+#         #
+#         # Calling a function without a prior prototype or definition is no longer permitted by default.
+#         #
+#         # 13.4.0-1  x86_64  ...  2025-07-23 05:27
+#         # 14.4.0-1  x86_64  ...  2026-07-01 18:52
+#         # https://www.Cygwin.com/packages/summary/mingw64-i686-gcc-core.html
+#         #
+#         # solution 1 - patch (BETTER)
+#         # https://github.com/msys2/MINGW-packages/blob/master/mingw-w64-argtable/001-missing-ctype.patch
+#         # Add missing ctype.h and enable aarch64 builds
+#         # https://github.com/msys2/MINGW-packages/commit/8d64ae169b4d04b551022916c3dafbc54da8a2ee
+#         #
+#         # solution 2 (TEMPORARY)
+#         #
+#         # What C flag is used to turn
+#         # back the behavior "error: implicit declaration of function"
+#         # back to "warning: implicit declaration of function" ?
+#         #
+#         # Gemini AI answer ...
+#         # -Wno-error=implicit-function-declaration
+#         #
+#         # Therefore, now do ...
+#         # from
+#         # ./configure
+#         # to
+#         # CFLAGS="-Wno-error=implicit-function-declaration" ./configure
+#         #
+#         CFLAGS="-Wno-error=implicit-function-declaration" ./configure
+#         set -x -v -e
+#         # argtable2-13/INSTALL file of instructions
+#         make
+#         make install
+#         popd # from argtable2-13
+#       echo "New current directory: $(pwd)"
+#       echo "END   Configure, Build, and Install argtable2-13 for Cygwin"
 
 
-    - name: Post Build - Exchange to an older ArgTable config.sub for Cygwin
-      id: exchangeOlderConfigSubforCygwin
-      if: ${{ env.compilerClass == 'Cygwin' && steps.exchangeNewerConfigSubforCygwin.outcome == 'success' }}
-      env:
-        # Cygwin OS variables
-        SHELLOPTS: igncr
-        CHERE_INVOKING: 1
-        # Mingw OS variable
-        msystem: ${{ env.compilerEnv }}
-      run: |
-        echo "BEGIN Post Build - Exchange to an older ArgTable config.sub for Cygwin"
-        set -x -v -e
-        export PATH=/usr/local/bin:/usr/bin:/bin:/usr/sbin:/sbin
-        echo "reverting to prevent CACHE-ING of config.sub"
-        if [ ! -f "config.sub" ]; then mv config.sub timestamp_2026-05-17_config.sub.guess ; fi
-        echo "END   Post Build - Exchange to an older ArgTable config.sub for Cygwin"
+#   - name: Post Build - Exchange to an older ArgTable config.guess for Cygwin
+#     id: exchangeOlderConfigGuessforCygwin
+#     if: ${{ env.compilerClass == 'Cygwin' && steps.exchangeNewerConfigGuessforCygwin.outcome == 'success' }}
+#     env:
+#       # Cygwin OS variables
+#       SHELLOPTS: igncr
+#       CHERE_INVOKING: 1
+#       # Mingw OS variable
+#       msystem: ${{ env.compilerEnv }}
+#     run: |
+#       echo "BEGIN Post Build - Exchange to an older ArgTable config.guess for Cygwin"
+#       set -x -v -e
+#       export PATH=/usr/local/bin:/usr/bin:/bin:/usr/sbin:/sbin
+#       echo "reverting to prevent CACHE-ING of config.guess"
+#       if [ ! -f "config.guess" ]; then mv config.guess timestamp_2026-05-17_config.guess ; fi
+#       echo "END   Post Build - Exchange to an older ArgTable config.guess for Cygwin"
+
+
+#   - name: Post Build - Exchange to an older ArgTable config.sub for Cygwin
+#     id: exchangeOlderConfigSubforCygwin
+#     if: ${{ env.compilerClass == 'Cygwin' && steps.exchangeNewerConfigSubforCygwin.outcome == 'success' }}
+#     env:
+#       # Cygwin OS variables
+#       SHELLOPTS: igncr
+#       CHERE_INVOKING: 1
+#       # Mingw OS variable
+#       msystem: ${{ env.compilerEnv }}
+#     run: |
+#       echo "BEGIN Post Build - Exchange to an older ArgTable config.sub for Cygwin"
+#       set -x -v -e
+#       export PATH=/usr/local/bin:/usr/bin:/bin:/usr/sbin:/sbin
+#       echo "reverting to prevent CACHE-ING of config.sub"
+#       if [ ! -f "config.sub" ]; then mv config.sub timestamp_2026-05-17_config.sub.guess ; fi
+#       echo "END   Post Build - Exchange to an older ArgTable config.sub for Cygwin"
 
 
     - name: Autogen, Configure, Build comskip for ${{ matrix.compilerEnv }}
