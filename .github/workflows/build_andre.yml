@@ -278,7 +278,7 @@ jobs:
           ${{ env.MINGW_PACKAGE_PREFIX }}-make
           ${{ env.MINGW_PACKAGE_PREFIX }}-autotools
           ${{ env.MINGW_PACKAGE_PREFIX }}-libtool
-          ${{ env.MINGW_PACKAGE_PREFIX }}-pkgconfig
+          ${{ env.MINGW_PACKAGE_PREFIX }}-pkg-config
           ${{ env.MINGW_PACKAGE_PREFIX }}-argtable
           ${{ env.MINGW_PACKAGE_PREFIX }}-SDL2
           ${{ env.MINGW_PACKAGE_PREFIX }}-SDL2_image
@@ -314,7 +314,6 @@ jobs:
           autoconf
           libtool
           pkg-config
-          yasm
           tar
           ffmpeg
           curl
