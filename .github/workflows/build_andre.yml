@@ -845,7 +845,7 @@ jobs:
         # Using ( "time" instead of "true", becuase "time" gives Github Actions output)
         ./comskip --help || time
 
-        # See "test_script" at
+        # See "test_script" located at
         # https://github.com/erikkaashoek/Comskip/blob/a140b6ac8bc8f596729e9052819affc779c3b377/appveyor.yml#L27
         # https://ci.appveyor.com/project/erikkaashoek/comskip/builds/51910208
 
