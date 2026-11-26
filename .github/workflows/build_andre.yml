@@ -917,13 +917,13 @@ jobs:
           # make
           #
 
-#       # NOT SURE IF THIS IS ACTUALLY USED ?!?
-#       if [ "${OperatingSystem}" == "Cygwin" ]
-#       then
-#         if [ "${PKG_CONFIG_PATH}" == "" ]; then export PKG_CONFIG_PATH=/usr/local/lib/pkgconfig ; fi
-#         if [ "${PKG_CONFIG_PATH}" != "" ]; then export PKG_CONFIG_PATH="/usr/local/lib/pkgconfig:${PKG_CONFIG_PATH}" ; fi
-#         echo "PKG_CONFIG_PATH: ${PKG_CONFIG_PATH}"
-#       fi
+        #       # NOT SURE IF THIS IS ACTUALLY USED ?!?
+        #       if [ "${OperatingSystem}" == "Cygwin" ]
+        #       then
+        #         if [ "${PKG_CONFIG_PATH}" == "" ]; then export PKG_CONFIG_PATH=/usr/local/lib/pkgconfig ; fi
+        #         if [ "${PKG_CONFIG_PATH}" != "" ]; then export PKG_CONFIG_PATH="/usr/local/lib/pkgconfig:${PKG_CONFIG_PATH}" ; fi
+        #         echo "PKG_CONFIG_PATH: ${PKG_CONFIG_PATH}"
+        #       fi
 
         # Building from GitHub
         # https://github.com/erikkaashoek/Comskip
