@@ -415,6 +415,9 @@ jobs:
     # https://github.com/argtable/argtable3
     # cmake(1)
     # https://cmake.org/cmake/help/v4.5/manual/cmake.1.html
+    # -B <path-to-build>
+    # Path to directory which CMake will use as the root of build directory.
+    # https://cmake.org/cmake/help/v4.5/manual/cmake.1.html
     # Build and Run
     # https://cmake.org/cmake/help/v4.5/guide/tutorial/Installation%20Commands%20and%20Concepts.html#id11
     # cmake -G Ninja <path-to-source> -DCMAKE_BUILD_TYPE=Release
@@ -425,6 +428,20 @@ jobs:
     # [SOLVED] Force cmake to use gcc/mingw makefiles on Windows runner #7998
     # JUL 28 2023
     # https://github.com/actions/runner-images/discussions/7998
+    # Ninja (install ${{matrix.prefix}}-ninja; the build uses the command ninja), 
+    # MinGW Makefiles (install ${{matrix.prefix}}-make, the build uses mingw32-make) 
+    # or 
+    # MSYS Makefiles (install make, and the build uses the plain make command).
+    # JUL 2021 SEEN NOV 2026
+    # https://github.com/msys2/msys2.github.io/issues/144
+    # Mingw (cmake install location default)
+    # -- Installing: C:/Program Files (x86)/argtable3/lib/pkgconfig/argtable3.pc
+    # -- Installing: C:/Program Files (x86)/argtable3/lib/libargtable3.a
+    # -- Installing: C:/Program Files (x86)/argtable3/include/argtable3.h
+    # Cygwin (cmake install location default)
+    # -- Installing: /usr/local/lib/pkgconfig/argtable3.pc
+    # -- Installing: /usr/local/lib/libargtable3.a
+    # -- Installing: /usr/local/include/argtable3.h
     - name: Build and Install Argtable3
       # Currently restricted to Mingw and Cygwin
       if: ${{ env.compilerClass == 'Mingw' || env.compilerClass == 'Cygwin' }}
@@ -438,11 +455,19 @@ jobs:
       run: |
         echo "Build and Install Argtable3"
         set -x -v -e
+
         pushd argtable3_source
         mkdir build
+
+        if [ "${OperatingSystem}" == "Msys" ]
+        then
+          # fresh - force a clean configuration
+          cmake -B build --fresh -DCMAKE_INSTALL_PREFIX="$MINGW_PREFIX"
+        fi
+
         pushd build
 
-        cmake -G Ninja .. --fresh -DCMAKE_BUILD_TYPE=Release 
+        cmake -G MSYS Makefiles -DCMAKE_BUILD_TYPE=Release
         cmake --build .
         cmake --install .
 
