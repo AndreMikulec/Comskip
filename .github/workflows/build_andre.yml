@@ -943,6 +943,7 @@ jobs:
         # https://github.com/erikkaashoek/Comskip/blob/a140b6ac8bc8f596729e9052819affc779c3b377/appveyor.yml#L21
         # https://ci.appveyor.com/project/erikkaashoek/comskip/builds/51910208
         ./autogen.sh
+        set -v
         if [ "${OperatingSystem}" == "Mingw" ] && [ -d "win-gpl-shared" ]
         then
           # -lswresample SEEMS now required
@@ -953,6 +954,7 @@ jobs:
         else
           ./configure
         fi
+        set +v
 
         if [ "${OperatingSystem}" == "Mingw" ]
         then
